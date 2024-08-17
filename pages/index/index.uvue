@@ -1,26 +1,35 @@
 <template>
 	<view>
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-		</view>
+		<com-swiper :modelData="modelData"></com-swiper>
+		<button @click="handleClick()">跳转</button>
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
+<script setup lang="uts">
+import { handleJump, LinkItem } from '@/utils';
+const link:LinkItem = {
+	id: '1',
+	type : 1,
+	name : '测试链接',
+	path : '/pages/index/index2',
+	checkLogin: true,
+	form: [{
+		value: '321',
+		key: 'navIndex'
+	}]
+}
+const modelData: UTSJSONObject = {
+	options: {
+		circular: true,
+		vertical: false,
+		interval: 3000,
+		autoplay: true,
 	}
+}
+const handleClick = () => {
+	link.
+	handleJump(link)
+}
 </script>
 
 <style>

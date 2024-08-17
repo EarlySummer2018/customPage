@@ -1,0 +1,28 @@
+<template>
+	<button @click="handleLogin()">登录</button>
+</template>
+
+<script setup>
+	import { onLoad } from '@dcloudio/uni-app'
+	const callback = ref<string>('')
+	onLoad((options) => {
+		callback.value = decodeURIComponent(options!.callback)
+	})
+	const handleLogin = () : void => {
+		uni.setStorageSync('token', '1f8c062cf6774f0e035a2b400f57043d')
+		uni.showToast({
+			title: '登录成功',
+			icon: 'none',
+			mask: true
+		})
+		setTimeout(() => {
+			uni.redirectTo({
+				url: callback.value
+			})
+		}, 1500)
+	}
+</script>
+
+<style>
+
+</style>

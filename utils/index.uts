@@ -1,0 +1,137 @@
+/** Linkpropertys 链接参数 */
+export type LinkParams = {
+	/** 是否必填 */
+	required ?: boolean,
+	
+	/** 参数值 */
+	value : string,
+	
+	/** 参数名称 */
+	label ?: string,
+	
+	/** 参数键 */
+	key : string,
+	
+	/** 参数json */
+	info ?: AnyObject
+}
+
+/**
+ * 跳转方式1
+ * 
+ * @type {'to' | 'replace' | 'launch'}
+ * 
+ * - `to`: 跳转到指定页面
+ * - `replace`: 替换当前页面为指定页面
+ * - `launch`: 启动指定页面，通常用于应用启动时
+ */
+export type JumpMethod = 'to' | 'replace' | 'launch'
+
+/** LinkItem 链接对象 */
+export type LinkItem = {
+	/** 唯一id */
+	id : string,
+	
+	/** 链接类型 */
+	type ?: number,
+	
+	/** 链接名称 */
+	name ?: string,
+	
+	/** 跳转链接 */
+	path : string,
+	
+	/** 校验登录 */
+	checkLogin ?: boolean,
+	
+	/**
+	 * 跳转方式
+	 *
+	 * - `to`: 保留当前页面，跳转到应用内的某个页面，使用 [`uni.navigateTo`](https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateto) 进行跳转
+	 * - `replace`: 关闭当前页面，跳转到应用内的某个页面，使用 [`uni.redirectTo`](https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#redirectto) 进行跳转
+	 * - `launch`: 关闭所有页面，打开到应用内的某个页面，使用 [`uni.reLaunch`](https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch) 进行跳转
+	 */
+	method ?: JumpMethod,
+	
+	/** 链接参数集合 */
+	form ?: LinkParams[]
+}
+
+
+/**
+ * getLinkParams 获取参数
+ * @property {LinkParams[]} params 参数列表
+ */
+const getLinkParams = (params : LinkParams[]) : string => {
+	const result : string[] = []
+	while (params.length) {
+		const item = params.shift()
+		if (item && item.key && item.value.trim()) {
+			result.push(`${item.key}=${item.value}`)
+		}
+	}
+	return result.join('&')
+}
+
+/**
+ * handleJump 处理跳转
+ * @property {LinkItem} linkItem 链接数据
+ */
+export const handleJump = (linkItem : LinkItem) : void => {
+	let params : string = ''
+	if (linkItem.form) {
+		params = '?' + getLinkParams(linkItem.form)
+	}
+	if (linkItem.checkLogin) {
+		// 校验是否登录
+		const token = uni.getStorageSync('token')
+		if (!token) {
+			const callback = encodeURIComponent(`${linkItem.path}${params}`)
+			uni.navigateTo({
+				url: `/pages/login/login?callback=${callback}`,
+				success(res) {
+					console.log('跳转成功：', res);
+				},
+				fail(error) {
+					console.log('跳转失败：', error);
+				}
+			})
+			return
+		}
+	}
+	switch (linkItem.method) {
+		case 'replace':
+			uni.redirectTo({
+				url: `${linkItem.path}${params}`,
+				success(res) {
+					console.log('跳转成功：', res);
+				},
+				fail(error) {
+					console.log('跳转失败：', error);
+				}
+			})
+			break;
+		case 'launch':
+			uni.reLaunch({
+				url: `${linkItem.path}${params}`,
+				success(res) {
+					console.log('跳转成功：', res);
+				},
+				fail(error) {
+					console.log('跳转失败：', error);
+				}
+			})
+			break;
+		default:
+			uni.navigateTo({
+				url: `${linkItem.path}${params}`,
+				success(res) {
+					console.log('跳转成功：', res);
+				},
+				fail(error) {
+					console.log('跳转失败：', error);
+				}
+			})
+			break;
+	}
+}

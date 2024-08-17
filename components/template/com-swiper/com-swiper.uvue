@@ -1,0 +1,52 @@
+<template>
+	<view class="com-swiper_warp">
+		<swiper
+			class="com-swiper"
+			:circular="modelOptions.circular"
+			:vertical="modelOptions.vertical"
+			:interval="modelOptions.interval"
+			:autoplay="modelOptions.autoplay"
+			:indicator-dots="false"
+			:rebound="false"
+			@change="handleChangeSwiper"
+		>
+			<swiper-item>
+				<view class="com-swiper-item">A</view>
+			</swiper-item>
+			<swiper-item>
+				<view class="com-swiper-item">B</view>
+			</swiper-item>
+			<swiper-item>
+				<view class="com-swiper-item">C</view>
+			</swiper-item>
+		</swiper>
+	</view>
+</template>
+
+<script setup lang="uts">
+defineProps({
+	modelData: {
+		type: UTSJSONObject,
+		default: () => {}
+	}
+})
+const modelOptions = ref({})
+onMounted(()=>{
+	modelOptions.value = modelData.options
+})
+const currentActiveSwiper = ref<number>(0)
+const handleChangeSwiper = (event: UniSwiperChangeEvent) => {
+	currentActiveSwiper.value = event.detail.current
+}
+</script>
+
+<style lang="scss">
+	.com-swiper_warp {
+		.com-swiper {
+			&-item {
+				
+			}
+		}
+	}
+
+</style>
