@@ -104,10 +104,10 @@ export const handleJump = (linkItem : LinkItem) : void => {
 			uni.redirectTo({
 				url: `${linkItem.path}${params}`,
 				success(res) {
-					console.log('跳转成功：', res);
+					console.log('redirectTo success');
 				},
 				fail(error) {
-					console.log('跳转失败：', error);
+					console.error('redirectTo fail：', error);
 				}
 			})
 			break;
@@ -115,10 +115,10 @@ export const handleJump = (linkItem : LinkItem) : void => {
 			uni.reLaunch({
 				url: `${linkItem.path}${params}`,
 				success(res) {
-					console.log('跳转成功：', res);
+					console.log('reLaunch success');
 				},
 				fail(error) {
-					console.log('跳转失败：', error);
+					console.error('reLaunch fail：', error);
 				}
 			})
 			break;
@@ -126,12 +126,25 @@ export const handleJump = (linkItem : LinkItem) : void => {
 			uni.navigateTo({
 				url: `${linkItem.path}${params}`,
 				success(res) {
-					console.log('跳转成功：', res);
+					console.log('navigateTo success');
 				},
 				fail(error) {
-					console.log('跳转失败：', error);
+					console.error('navigateTo fail：', error);
 				}
 			})
 			break;
 	}
+}
+
+/**
+ * px2rpx `px` 换算成 `rpx`
+ * 
+ * @property {string | number} px 需要换算的值，单位：px
+ * @returns {string} 返回换算后的值，带 rpx 单位
+*/
+export const px2rpx = (px: string | number) : string => {
+	if (!px) return ``
+	const deviceWidth : number = uni.getSystemInfoSync().windowWidth
+	const rpx : number = ( 750 / deviceWidth ) * Number(px)
+	return Math.floor(rpx) + 'rpx'
 }

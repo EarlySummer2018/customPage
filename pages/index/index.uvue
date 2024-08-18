@@ -1,35 +1,39 @@
 <template>
 	<view>
 		<com-swiper :modelData="modelData"></com-swiper>
-		<button @click="handleClick()">跳转</button>
 	</view>
 </template>
 
-<script setup lang="uts">
-import { handleJump, LinkItem } from '@/utils';
-const link:LinkItem = {
-	id: '1',
-	type : 1,
-	name : '测试链接',
-	path : '/pages/index/index2',
-	checkLogin: true,
-	form: [{
-		value: '321',
-		key: 'navIndex'
-	}]
-}
-const modelData: UTSJSONObject = {
-	options: {
-		circular: true,
-		vertical: false,
-		interval: 3000,
-		autoplay: true,
+<script setup
+	lang="uts">
+	import { handleJump, LinkItem } from '@/utils';
+	const modelData : UTSJSONObject = {
+		content: [{
+			id: 1,
+			src: 'https://w.wallhaven.cc/full/1p/wallhaven-1pvepw.png',
+			name: '轮播图1',
+			link: {
+				id: '1',
+				type: 1,
+				name: '测试链接',
+				path: '/pages/index/index2',
+				checkLogin: true,
+				form: [{
+					value: '321',
+					key: 'navIndex'
+				}]
+			}
+		}],
+		options: {
+			circular: true,
+			vertical: false,
+			interval: 3000,
+			autoplay: true,
+		},
+		style: {
+			bgColor: 'pink'
+		}
 	}
-}
-const handleClick = () => {
-	link.
-	handleJump(link)
-}
 </script>
 
 <style>
@@ -42,6 +46,6 @@ const handleClick = () => {
 	.title {
 		font-size: 18px;
 		color: #8f8f94;
-    text-align: center;
+		text-align: center;
 	}
 </style>

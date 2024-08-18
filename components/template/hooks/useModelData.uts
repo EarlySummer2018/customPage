@@ -1,0 +1,32 @@
+import { ref, onMounted } from 'vue'
+import { px2rpx } from '@/utils'
+export const useModelData = (data) => {
+	const modelContent = ref<UTSJSONObject[]>([])
+	const modelOptions = ref<UTSJSONObject>({})
+	const modelStyle = ref<UTSJSONObject>({})
+
+	const setContainerStyle = () : UTSJSONObject => {
+		const { px, py, br, bgColor, bgImage } = data.style
+		const styleObj = {
+			padding: `${px2rpx(py as number)} ${px2rpx(px as number)}`
+		}
+		if (bgImage) {
+			styleObj.background = `url(${bgImage}) no-repeat 0 0 / ceover`
+		} else {
+			styleObj.background = bgColor
+		}
+		return styleObj
+	}
+	onMounted(() => {
+		modelContent.value = data.content as UTSJSONObject[]
+		modelOptions.value = data.options as UTSJSONObject
+		modelStyle.value = data.style as UTSJSONObject
+	})
+
+	return {
+		modelOptions,
+		modelStyle,
+		modelContent,
+		setContainerStyle
+	}
+}
