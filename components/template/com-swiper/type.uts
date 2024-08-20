@@ -1,3 +1,28 @@
-export type ModelType = {
-	
+type BorderRadius = {
+	r1 : number,
+	r2 : number,
+	r3 : number,
+	r4 : number
+}
+
+export type ModelOptions = {
+	circular: boolean,
+	vertical: boolean,
+	interval: number,
+	autoplay: boolean,
+}
+
+export type ModelStyle = {
+	bgColor : string.ColorString,
+	px : number,
+	py : number,
+	contentHeight : number,
+	borderRadius : BorderRadius
+}
+
+export type DotStyle = {
+	size : number,
+	mx : number,
+	bottom : number,
+	justifyContent: string
 }

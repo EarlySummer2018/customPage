@@ -14,18 +14,19 @@
 				v-for="item in modelContent"
 				:key="item.id"
 				@click="handleJump(item.link)">
-				<com-image :src="item.src" mode="aspectFill"></com-image>
+				<com-image :src="item.src"
+					mode="aspectFill"></com-image>
 			</swiper-item>
 		</swiper>
-		<view class="indicator-dots" :style="setDotContainerStyle()">
-			<view
-				class="indicator-dots-item"
+		<view class="indicator-dots"
+			:style="setDotContainerStyle()">
+			<view class="indicator-dots-item"
+				:style="setDotStyle()"
 				:class="{
 					'active-dot': item - 1 === currentActiveSwiper
 				}"
 				v-for="item in modelContent.length"
-				:key="item"
-			>
+				:key="item">
 			</view>
 		</view>
 	</view>
@@ -35,6 +36,7 @@
 	lang="uts">
 	import { handleJump, px2rpx } from '@/utils';
 	import { useModelData } from '@/components/template/hooks/useModelData.uts'
+	import { DotStyle, ModelStyle, ModelOptions } from './type';
 	const props = defineProps({
 		modelData: {
 			type: Object as PropType<UTSJSONObject>,
@@ -49,18 +51,42 @@
 		setContainerStyle,
 		setContentStyle
 	} = useModelData(props.modelData)
-	
+
 	const setDotContainerStyle = () : UTSJSONObject => {
-		const { px, py } = modelStyle.value
+		const { px, py, contentHeight } = props.modelData.style as ModelStyle
+		const { size, mx, bottom, pb, justifyContent } = props.modelData.dotStyle as DotStyle
+		const width = `calc(100% - ${px2rpx(px * 2)})`
+		if (modelOptions.value.vertical) {
+			const jc = {
+				'flex-start': 'flex-end',
+				'flex-end': 'flex-start',
+				'center': 'center'
+			}
+			return {
+				flexDirection: 'column-reverse',
+				height: px2rpx(contentHeight),
+				width: px2rpx(size),
+				right: px2rpx(px + bottom),
+				bottom: px2rpx(py),
+				justifyContent: jc[justifyContent],
+			}
+		}
 		return {
-			left: px2rpx(px as number),
-			bottom: px2rpx(py as number)
+			width,
+			height: px2rpx(size + pb),
+			left: px2rpx(px),
+			bottom: px2rpx(px),
+			paddingBottom: px2rpx(pb),
+			justifyContent,
 		}
 	}
 	const setDotStyle = () : UTSJSONObject => {
-		const { px, py } = modelStyle.value
+		const { mx, size } = props.modelData.dotStyle as DotStyle
+		const { vertical } = props.modelData.options as ModelOptions
 		return {
-			
+			width: px2rpx(size),
+			height: px2rpx(size),
+			margin: vertical ? `${px2rpx(mx)} 0` : `0 ${px2rpx(mx)}`
 		}
 	}
 	const currentActiveSwiper = ref<number>(0)
@@ -72,14 +98,17 @@
 <style lang="scss">
 	.com-swiper_warp {
 		position: relative;
+
 		.com-swiper {
 			width: 100%;
 			background-color: transparent;
+
 			&-item {
 				width: 100%;
 				height: 100%;
 			}
 		}
+
 		.indicator-dots {
 			position: absolute;
 			width: 100%;
@@ -88,11 +117,13 @@
 			align-items: center;
 			flex-direction: row;
 			justify-content: center;
+
 			&-item {
 				height: 20rpx;
 				width: 20rpx;
 				border-radius: 50%;
 				background-color: paleturquoise;
+
 				&.active-dot {
 					background-color: #fff;
 				}

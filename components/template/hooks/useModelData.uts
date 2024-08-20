@@ -1,5 +1,5 @@
 import { ref, onMounted } from 'vue'
-import { px2rpx } from '@/utils'
+import { px2rpx, removeEmptyKeys } from '@/utils'
 export const useModelData = (data) => {
 	/** 组件数据 */
 	const modelContent = ref<UTSJSONObject[]>([])
@@ -20,24 +20,28 @@ export const useModelData = (data) => {
 		} else {
 			styleObj.background = bgColor
 		}
-		return styleObj
+		return removeEmptyKeys(styleObj)
 	}
 	
 	/** 设置内层容器样式 */
 	const setContentStyle = () : UTSJSONObject => {
-		const { borderRadius, contentBgColor, contentBgImage } = data.style
+		const { borderRadius, contentBgColor, contentBgImage, contentHeight } = data.style
 		const { r1, r2, r3, r4 } = borderRadius || {}
 		const styleObj = {
 			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
 			background: '',
+			height: '',
 			overflow: 'hidden'
+		}
+		if(contentHeight) {
+			styleObj.height = px2rpx(contentHeight)
 		}
 		if (contentBgImage) {
 			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
 		} else {
 			styleObj.background = contentBgColor
 		}
-		return styleObj
+		return removeEmptyKeys(styleObj)
 	}
 	
 	onMounted(() => {

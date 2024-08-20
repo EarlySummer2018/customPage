@@ -41,7 +41,7 @@
 		}],
 		options: {
 			circular: true,
-			vertical: false,
+			vertical: true,
 			interval: 3000,
 			autoplay: true,
 		},
@@ -49,12 +49,20 @@
 			bgColor: 'pink',
 			px: 10,
 			py: 10,
+			contentHeight: 200,
 			borderRadius: {
 				r1: 1,
 				r2: 5,
 				r3: 10,
 				r4: 20
 			}
+		},
+		dotStyle: {
+			size: 6,
+			mx: 2,
+			bottom: 10,
+			pb: 10,
+			justifyContent: 'center'
 		}
 	}
 </script>

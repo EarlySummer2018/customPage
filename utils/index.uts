@@ -2,16 +2,16 @@
 export type LinkParams = {
 	/** 是否必填 */
 	required ?: boolean,
-	
+
 	/** 参数值 */
 	value : string,
-	
+
 	/** 参数名称 */
 	label ?: string,
-	
+
 	/** 参数键 */
 	key : string,
-	
+
 	/** 参数json */
 	info ?: AnyObject
 }
@@ -31,19 +31,19 @@ export type JumpMethod = 'to' | 'replace' | 'launch'
 export type LinkItem = {
 	/** 唯一id */
 	id : string,
-	
+
 	/** 链接类型 */
 	type ?: number,
-	
+
 	/** 链接名称 */
 	name ?: string,
-	
+
 	/** 跳转链接 */
 	path : string,
-	
+
 	/** 校验登录 */
 	checkLogin ?: boolean,
-	
+
 	/**
 	 * 跳转方式
 	 *
@@ -52,7 +52,7 @@ export type LinkItem = {
 	 * - `launch`: 关闭所有页面，打开到应用内的某个页面，使用 [`uni.reLaunch`](https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch) 进行跳转
 	 */
 	method ?: JumpMethod,
-	
+
 	/** 链接参数集合 */
 	form ?: LinkParams[]
 }
@@ -142,9 +142,24 @@ export const handleJump = (linkItem : LinkItem) : void => {
  * @property {string | number} px 需要换算的值，单位：px
  * @returns {string} 返回换算后的值，带 rpx 单位
 */
-export const px2rpx = (px: string | number) : string => {
+export const px2rpx = (px : string | number) : string => {
 	if (!px) return ``
 	const deviceWidth : number = uni.getSystemInfoSync().windowWidth
-	const rpx : number = ( 750 / deviceWidth ) * Number(px)
+	const rpx : number = (750 / deviceWidth) * Number(px)
 	return Math.floor(rpx) + 'rpx'
+}
+
+/**
+ * removeEmptyKeys 移除值为空的 key
+ * @property {UTSJSONObject} obj 要操作的对象
+ * @returns {UTSJSONObject} 返回处理后的对象
+ */
+export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
+	return Object.keys(obj).reduce((acc, key) => {
+		const value = obj[key];
+		if (value !== null && value !== undefined && value !== '' && !Number.isNaN(value)) {
+			acc[key] = value;
+		}
+		return acc;
+	}, {});
 }
