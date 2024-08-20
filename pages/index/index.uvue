@@ -23,6 +23,21 @@
 					key: 'navIndex'
 				}]
 			}
+		},{
+			id: 2,
+			src: 'https://img0.baidu.com/it/u=2518681441,2799966999&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+			name: '轮播图1',
+			link: {
+				id: '1',
+				type: 1,
+				name: '测试链接',
+				path: '/pages/index/index2',
+				checkLogin: true,
+				form: [{
+					value: '321',
+					key: 'navIndex'
+				}]
+			}
 		}],
 		options: {
 			circular: true,
@@ -31,7 +46,15 @@
 			autoplay: true,
 		},
 		style: {
-			bgColor: 'pink'
+			bgColor: 'pink',
+			px: 10,
+			py: 10,
+			borderRadius: {
+				r1: 1,
+				r2: 5,
+				r3: 10,
+				r4: 20
+			}
 		}
 	}
 </script>

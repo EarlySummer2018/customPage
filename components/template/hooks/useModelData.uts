@@ -1,14 +1,19 @@
 import { ref, onMounted } from 'vue'
 import { px2rpx } from '@/utils'
 export const useModelData = (data) => {
+	/** 组件数据 */
 	const modelContent = ref<UTSJSONObject[]>([])
+	/** 组件属性 */
 	const modelOptions = ref<UTSJSONObject>({})
+	/** 组件样式 */
 	const modelStyle = ref<UTSJSONObject>({})
 
+	/** 设置外层容器样式 */
 	const setContainerStyle = () : UTSJSONObject => {
 		const { px, py, br, bgColor, bgImage } = data.style
 		const styleObj = {
-			padding: `${px2rpx(py as number)} ${px2rpx(px as number)}`
+			padding: `${px2rpx(py as number)} ${px2rpx(px as number)}`,
+			background: ''
 		}
 		if (bgImage) {
 			styleObj.background = `url(${bgImage}) no-repeat 0 0 / ceover`
@@ -17,6 +22,24 @@ export const useModelData = (data) => {
 		}
 		return styleObj
 	}
+	
+	/** 设置内层容器样式 */
+	const setContentStyle = () : UTSJSONObject => {
+		const { borderRadius, contentBgColor, contentBgImage } = data.style
+		const { r1, r2, r3, r4 } = borderRadius || {}
+		const styleObj = {
+			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
+			background: '',
+			overflow: 'hidden'
+		}
+		if (contentBgImage) {
+			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
+		} else {
+			styleObj.background = contentBgColor
+		}
+		return styleObj
+	}
+	
 	onMounted(() => {
 		modelContent.value = data.content as UTSJSONObject[]
 		modelOptions.value = data.options as UTSJSONObject
@@ -24,9 +47,13 @@ export const useModelData = (data) => {
 	})
 
 	return {
+		// data
 		modelOptions,
 		modelStyle,
 		modelContent,
-		setContainerStyle
+		
+		// methods
+		setContainerStyle,
+		setContentStyle
 	}
 }

@@ -13,6 +13,9 @@
 			v-if="isError">
 			<text class="txt"
 				v-if="showErrMsg">{{errMsg || "加载失败"}}</text>
+			<template v-else>
+				<slot></slot>
+			</template>
 		</view>
 	</view>
 </template>

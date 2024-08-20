@@ -2,6 +2,7 @@
 	<view class="com-swiper_warp"
 		:style="setContainerStyle()">
 		<swiper class="com-swiper"
+			:style="setContentStyle()"
 			:circular="modelOptions.circular"
 			:vertical="modelOptions.vertical"
 			:interval="modelOptions.interval"
@@ -9,20 +10,30 @@
 			:indicator-dots="false"
 			:rebound="false"
 			@change="handleChangeSwiper">
-			<swiper-item v-for="item in modelContent"
+			<swiper-item class="com-swiper-item"
+				v-for="item in modelContent"
 				:key="item.id"
 				@click="handleJump(item.link)">
-				<view class="com-swiper-item">
-					<com-image :src="item.src" mode="aspectFill"></com-image>
-				</view>
+				<com-image :src="item.src" mode="aspectFill"></com-image>
 			</swiper-item>
 		</swiper>
+		<view class="indicator-dots" :style="setDotContainerStyle()">
+			<view
+				class="indicator-dots-item"
+				:class="{
+					'active-dot': item - 1 === currentActiveSwiper
+				}"
+				v-for="item in modelContent.length"
+				:key="item"
+			>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script setup
 	lang="uts">
-	import { handleJump } from '@/utils';
+	import { handleJump, px2rpx } from '@/utils';
 	import { useModelData } from '@/components/template/hooks/useModelData.uts'
 	const props = defineProps({
 		modelData: {
@@ -31,7 +42,27 @@
 			default: () : UTSJSONObject => ({})
 		}
 	})
-	const { modelOptions, modelStyle, modelContent, setContainerStyle } = useModelData(props.modelData)
+	const {
+		modelOptions,
+		modelStyle,
+		modelContent,
+		setContainerStyle,
+		setContentStyle
+	} = useModelData(props.modelData)
+	
+	const setDotContainerStyle = () : UTSJSONObject => {
+		const { px, py } = modelStyle.value
+		return {
+			left: px2rpx(px as number),
+			bottom: px2rpx(py as number)
+		}
+	}
+	const setDotStyle = () : UTSJSONObject => {
+		const { px, py } = modelStyle.value
+		return {
+			
+		}
+	}
 	const currentActiveSwiper = ref<number>(0)
 	const handleChangeSwiper = (event : UniSwiperChangeEvent) => {
 		currentActiveSwiper.value = event.detail.current
@@ -40,12 +71,31 @@
 
 <style lang="scss">
 	.com-swiper_warp {
+		position: relative;
 		.com-swiper {
 			width: 100%;
 			background-color: transparent;
 			&-item {
 				width: 100%;
 				height: 100%;
+			}
+		}
+		.indicator-dots {
+			position: absolute;
+			width: 100%;
+			height: 20rpx;
+			display: flex;
+			align-items: center;
+			flex-direction: row;
+			justify-content: center;
+			&-item {
+				height: 20rpx;
+				width: 20rpx;
+				border-radius: 50%;
+				background-color: paleturquoise;
+				&.active-dot {
+					background-color: #fff;
+				}
 			}
 		}
 	}
