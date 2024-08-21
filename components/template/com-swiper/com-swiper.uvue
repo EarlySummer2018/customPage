@@ -121,7 +121,7 @@
 			&-item {
 				height: 20rpx;
 				width: 20rpx;
-				border-radius: 50%;
+				border-radius: 100rpx;
 				background-color: paleturquoise;
 
 				&.active-dot {

@@ -1,70 +1,13 @@
 <template>
 	<view>
-		<com-swiper :modelData="modelData"></com-swiper>
+		<!-- <com-swiper :modelData="swiperModelData"></com-swiper> -->
+		<com-search :modelData="searchModelData"></com-search>
 	</view>
 </template>
 
 <script setup
 	lang="uts">
-	import { handleJump, LinkItem } from '@/utils';
-	const modelData : UTSJSONObject = {
-		content: [{
-			id: 1,
-			src: 'https://w.wallhaven.cc/full/1p/wallhaven-1pvepw.png',
-			name: '轮播图1',
-			link: {
-				id: '1',
-				type: 1,
-				name: '测试链接',
-				path: '/pages/index/index2',
-				checkLogin: true,
-				form: [{
-					value: '321',
-					key: 'navIndex'
-				}]
-			}
-		},{
-			id: 2,
-			src: 'https://img0.baidu.com/it/u=2518681441,2799966999&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-			name: '轮播图1',
-			link: {
-				id: '1',
-				type: 1,
-				name: '测试链接',
-				path: '/pages/index/index2',
-				checkLogin: true,
-				form: [{
-					value: '321',
-					key: 'navIndex'
-				}]
-			}
-		}],
-		options: {
-			circular: true,
-			vertical: true,
-			interval: 3000,
-			autoplay: true,
-		},
-		style: {
-			bgColor: 'pink',
-			px: 10,
-			py: 10,
-			contentHeight: 200,
-			borderRadius: {
-				r1: 1,
-				r2: 5,
-				r3: 10,
-				r4: 20
-			}
-		},
-		dotStyle: {
-			size: 6,
-			mx: 2,
-			bottom: 10,
-			pb: 10,
-			justifyContent: 'center'
-		}
-	}
+	import { swiperModelData, searchModelData } from '@/components/template/mock/mock';
 </script>
 
 <style>

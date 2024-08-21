@@ -1,0 +1,185 @@
+<template>
+	<view
+		class="com-search_warp"
+		:style="setContainerStyle()"
+	>
+		<view
+			class="com-search-logo"
+			:style="setIconStyle('logo')"
+			v-if="isShowIcon('logo', 'left')"
+		>
+			<com-image
+				:showErrMsg="false"
+				:src="modelOptions['logo']"
+			></com-image>
+		</view>
+		<view
+			class="com-search"
+			:style="setContentStyle()"
+			@click="handleJump(modelOptions['link'] as LinkItem)"
+		>
+			<view
+				class="com-search-icon"
+				:style="setIconStyle('icon')"
+			>
+				<com-image
+					:showErrMsg="false"
+					:src="modelOptions['icon']"
+				></com-image>
+			</view>
+			<text
+				class="com-search-placeholder"
+				:style="setPlaceHolderStyle()"
+			>
+				{{modelOptions['placeholder']}}
+			</text>
+		</view>
+		<view
+			class="com-search-logo"
+			:style="setIconStyle('logo')"
+			v-if="isShowIcon('logo', 'right')"
+		>
+			<com-image
+				:showErrMsg="false"
+				:src="modelOptions['logo']"
+			></com-image>
+		</view>
+	</view>
+</template>
+
+<script lang="uts"
+	setup>
+	import { handleJump, px2rpx, removeEmptyKeys, LinkItem } from '@/utils';
+	import { useModelData } from '@/components/template/hooks/useModelData.uts'
+	import { InputStyle, ModelOptions, ModelStyle } from './type';
+	const props = defineProps({
+		modelData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
+		},
+		disabled: {
+			type: Boolean,
+			default: false
+		}
+	})
+	
+	/** 组件属性 */
+	const modelOptions = ref<UTSJSONObject>({})
+	/** 组件样式 */
+	const modelStyle = ref<UTSJSONObject>({})
+	/** 输入框样式 */
+	const inputStyle = ref<UTSJSONObject>({})
+	
+	/** 设置外层容器样式 */
+	const setContainerStyle = () : UTSJSONObject => {
+		const styleObj = {
+			padding: '',
+			background: ''
+		}
+		if(modelStyle.value['py'] != null && modelStyle.value['px'] != null) {
+			styleObj.padding = `${px2rpx(modelStyle.value['py'] as number)} ${px2rpx(modelStyle.value['px'] as number)}`
+		}
+		if (modelStyle.value['bgImage'] !== '' && modelStyle.value['bgImage'] != null) {
+			styleObj.background = `url(${modelStyle.value['bgImage']}) no-repeat 0 0 / ceover`
+		} else if (modelStyle.value['bgColor'] != null){
+			styleObj.background = modelStyle.value['bgColor'] as string
+		}
+		return removeEmptyKeys(styleObj)
+	}
+
+	/** 设置内层容器样式 */
+	const setContentStyle = () : UTSJSONObject => {
+		let borderRadius : UTSJSONObject = {
+			r1: 0,
+			r2: 0,
+			r3: 0,
+			r4: 0
+		}
+		if(modelStyle.value['borderRadius'] != null) {
+			borderRadius = modelStyle.value['borderRadius'] as UTSJSONObject
+		}
+		const styleObj = {
+			borderRadius: `${px2rpx(borderRadius['r1'] as number)} ${px2rpx(borderRadius['r2'] as number)}  ${px2rpx(borderRadius['r3'] as number)}  ${px2rpx(borderRadius['r4'] as number)}`,
+			background: '',
+			height: '',
+			overflow: 'hidden',
+			padding: '',
+			justifyContent: inputStyle.value['justifyContent'],
+		}
+		if(inputStyle.value['py'] != null && inputStyle.value['px'] != null) {
+			styleObj.padding = `${px2rpx(inputStyle.value['py'] as number)} ${px2rpx(inputStyle.value['px'] as number)}`
+		}
+		if(modelStyle.value['contentHeight'] != null) {
+			styleObj.height = px2rpx(modelStyle.value['contentHeight'] as number)
+		}
+		if (modelStyle.value['contentBgImage'] !== '' && modelStyle.value['contentBgImage'] != null) {
+			styleObj.background = `url(${modelStyle.value['contentBgImage']}) no-repeat 0 0 / ceover`
+		} else if (modelStyle.value['contentBgColor'] != null){
+			styleObj.background = modelStyle.value['contentBgColor'] as string
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	
+	const setIconStyle = (type?: string) : UTSJSONObject => {
+		if(type === 'logo') {
+			return {
+				width: px2rpx(modelStyle.value['logoSize'] as number),
+				height: px2rpx(modelStyle.value['logoSize'] as number),
+				marginLeft: modelOptions.value['logoPosition'] === 'right' ? '20rpx' : '0px',
+				marginRight: modelOptions.value['logoPosition'] === 'left' ? '20rpx' : '0px'
+			}
+		}
+		return {
+			width: inputStyle.value['iconSize'] != null ? px2rpx(inputStyle.value['iconSize'] as number) : '',
+			height: inputStyle.value['iconSize'] != null ? px2rpx(inputStyle.value['iconSize'] as number) : ''
+		}
+	}
+	const setPlaceHolderStyle = () : UTSJSONObject => {
+		return {
+			fontSize: inputStyle.value['fontSize']!=null?px2rpx(inputStyle.value['fontSize'] as number):'',
+			color: inputStyle.value['color']
+		}
+	}
+	
+	const isShowIcon = (key: string, position?:string) : boolean => {
+		if(key === 'icon') {
+			return modelOptions.value['icon'] !== '' ? true : false
+		}
+		const flag = modelOptions.value['logo'] !== '' ? true : false
+		return modelOptions.value['logoPosition'] === position && flag
+	}
+	
+	onMounted(() => {
+		modelOptions.value = props.modelData['options'] as UTSJSONObject
+		modelStyle.value = props.modelData['style'] as UTSJSONObject
+		inputStyle.value = props.modelData['inputStyle'] as UTSJSONObject
+	})
+</script>
+
+<style lang="scss">
+	.com-search_warp {
+		flex-direction: row;
+		align-items: center;
+		.com-search-logo {
+			margin-right: 20rpx;
+			flex-shrink: 0;
+		}
+		.com-search {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			flex-direction: row;
+			justify-content: center;
+
+			&-icon {
+				height: 100%;
+				background-color: pink;
+			}
+
+			&-placeholder {
+				margin-left: 10rpx;
+			}
+		}
+	}
+</style>

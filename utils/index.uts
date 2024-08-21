@@ -13,7 +13,7 @@ export type LinkParams = {
 	key : string,
 
 	/** 参数json */
-	info ?: AnyObject
+	info ?: UTSJSONObject
 }
 
 /**
@@ -64,10 +64,10 @@ export type LinkItem = {
  */
 const getLinkParams = (params : LinkParams[]) : string => {
 	const result : string[] = []
-	while (params.length) {
+	while (params.length > 0) {
 		const item = params.shift()
-		if (item && item.key && item.value.trim()) {
-			result.push(`${item.key}=${item.value}`)
+		if (item!.value !== '') {
+			result.push(`${item!.key}=${item!.value}`)
 		}
 	}
 	return result.join('&')
@@ -79,13 +79,13 @@ const getLinkParams = (params : LinkParams[]) : string => {
  */
 export const handleJump = (linkItem : LinkItem) : void => {
 	let params : string = ''
-	if (linkItem.form) {
-		params = '?' + getLinkParams(linkItem.form)
+	if (linkItem.form != null) {
+		params = '?' + getLinkParams(linkItem!.form as LinkParams[])
 	}
-	if (linkItem.checkLogin) {
+	if (linkItem.checkLogin === true) {
 		// 校验是否登录
 		const token = uni.getStorageSync('token')
-		if (!token) {
+		if (token === '') {
 			const callback = encodeURIComponent(`${linkItem.path}${params}`)
 			uni.navigateTo({
 				url: `/pages/login/login?callback=${callback}`,
@@ -142,10 +142,9 @@ export const handleJump = (linkItem : LinkItem) : void => {
  * @property {string | number} px 需要换算的值，单位：px
  * @returns {string} 返回换算后的值，带 rpx 单位
 */
-export const px2rpx = (px : string | number) : string => {
-	if (!px) return ``
+export const px2rpx = (px : number) : string => {
 	const deviceWidth : number = uni.getSystemInfoSync().windowWidth
-	const rpx : number = (750 / deviceWidth) * Number(px)
+	const rpx : number = (750 / deviceWidth) * px
 	return Math.floor(rpx) + 'rpx'
 }
 
@@ -155,11 +154,11 @@ export const px2rpx = (px : string | number) : string => {
  * @returns {UTSJSONObject} 返回处理后的对象
  */
 export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
-	return Object.keys(obj).reduce((acc, key) => {
-		const value = obj[key];
-		if (value !== null && value !== undefined && value !== '' && !Number.isNaN(value)) {
-			acc[key] = value;
+	let newData : UTSJSONObject = {};
+	for (let key in obj) {
+		if(obj[key] !== '' && obj[key] != null) {
+			newData[key] = obj[key]
 		}
-		return acc;
-	}, {});
+	}
+	return newData
 }

@@ -1,6 +1,6 @@
 import { ref, onMounted } from 'vue'
 import { px2rpx, removeEmptyKeys } from '@/utils'
-export const useModelData = (data) => {
+export const useModelData = (data: UTSJSONObject) : UTSJSONObject => {
 	/** 组件数据 */
 	const modelContent = ref<UTSJSONObject[]>([])
 	/** 组件属性 */
@@ -9,7 +9,7 @@ export const useModelData = (data) => {
 	const modelStyle = ref<UTSJSONObject>({})
 
 	/** 设置外层容器样式 */
-	const setContainerStyle = () : UTSJSONObject => {
+	const setContainerStyle = () : string.cssPropertyString => {
 		const { px, py, br, bgColor, bgImage } = data.style
 		const styleObj = {
 			padding: `${px2rpx(py as number)} ${px2rpx(px as number)}`,
@@ -46,8 +46,8 @@ export const useModelData = (data) => {
 	
 	onMounted(() => {
 		modelContent.value = data.content as UTSJSONObject[]
-		modelOptions.value = data.options as UTSJSONObject
-		modelStyle.value = data.style as UTSJSONObject
+		modelOptions.value = (data.options as UTSJSONObject) || {}
+		modelStyle.value = (data.style as UTSJSONObject) || {}
 	})
 
 	return {

@@ -6,7 +6,7 @@
 	import { onLoad } from '@dcloudio/uni-app'
 	const callback = ref<string>('')
 	onLoad((options) => {
-		callback.value = decodeURIComponent(options!.callback)
+		callback.value = decodeURIComponent(options['callback'] as string) as string
 	})
 	const handleLogin = () : void => {
 		uni.setStorageSync('token', '1f8c062cf6774f0e035a2b400f57043d')

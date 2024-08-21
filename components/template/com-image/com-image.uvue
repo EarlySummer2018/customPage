@@ -12,7 +12,7 @@
 		<view class="com-image-error"
 			v-if="isError">
 			<text class="txt"
-				v-if="showErrMsg">{{errMsg || "加载失败"}}</text>
+				v-if="showErrMsg">{{ errMsg }}</text>
 			<template v-else>
 				<slot></slot>
 			</template>
@@ -45,14 +45,14 @@
 	const isError = ref<boolean>(false)
 	const errMsg = ref<string>('')
 	const isSuccess = ref<boolean>(false)
-	const handleError = (error) => {
+	const handleError = (error : UniImageErrorEvent) : void => {
 		isError.value = true
 		isSuccess.value = false
 		isLoading.value = false
 		errMsg.value = error.detail.errMsg
 		console.error('Image loading failed：', error)
 	}
-	const handleLoad = () => {
+	const handleLoad = () : void => {
 		isError.value = false
 		isSuccess.value = true
 		isLoading.value = false

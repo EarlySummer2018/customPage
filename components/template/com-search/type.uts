@@ -1,0 +1,35 @@
+import { LinkItem } from "@/utils"
+
+type BorderRadius = {
+	r1 : number,
+	r2 : number,
+	r3 : number,
+	r4 : number
+}
+
+export type ModelOptions = {
+	placeholder : string,
+	icon : string,
+	logo : string,
+	logoPosition : string,
+	link : LinkItem
+}
+
+export type ModelStyle = {
+	bgColor : string.ColorString,
+	px : number,
+	py : number,
+	contentHeight : number,
+	borderRadius : BorderRadius,
+	logoSize : number,
+	contentBgColor : string.ColorString,
+}
+
+export type InputStyle = {
+	px : number,
+	py : number,
+	iconSize : number,
+	fontSize : number,
+	color : string.ColorString,
+	justifyContent : string
+}
