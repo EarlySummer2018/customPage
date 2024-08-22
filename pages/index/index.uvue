@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<!-- <com-swiper :modelData="swiperModelData"></com-swiper> -->
+		<com-swiper :modelData="swiperModelData"></com-swiper>
 		<com-search :modelData="searchModelData"></com-search>
 	</view>
 </template>

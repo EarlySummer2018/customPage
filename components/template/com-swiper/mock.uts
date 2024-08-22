@@ -1,21 +1,8 @@
+import { DotStyle, ModelContent, ModelOptions, ModelStyle } from "./type";
+
 export const swiperModelData : UTSJSONObject = {
 	content: [{
-		id: 1,
-		src: 'https://w.wallhaven.cc/full/1p/wallhaven-1pvepw.png',
-		name: '轮播图1',
-		link: {
-			id: '1',
-			type: 1,
-			name: '测试链接',
-			path: '/pages/index/index2',
-			checkLogin: true,
-			form: [{
-				value: '321',
-				key: 'navIndex'
-			}]
-		}
-	}, {
-		id: 2,
+		id: '2',
 		src: 'https://img0.baidu.com/it/u=2518681441,2799966999&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
 		name: '轮播图1',
 		link: {
@@ -29,13 +16,28 @@ export const swiperModelData : UTSJSONObject = {
 				key: 'navIndex'
 			}]
 		}
-	}],
+	},{
+		id: '2',
+		src: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+		name: '轮播图1',
+		link: {
+			id: '1',
+			type: 1,
+			name: '测试链接',
+			path: '/pages/index/index2',
+			checkLogin: true,
+			form: [{
+				value: '321',
+				key: 'navIndex'
+			}]
+		}
+	}] as ModelContent[],
 	options: {
 		circular: true,
-		vertical: true,
-		interval: 3000,
+		vertical: false,
+		interval: 5000,
 		autoplay: true,
-	},
+	} as ModelOptions,
 	style: {
 		bgColor: 'pink',
 		px: 10,
@@ -47,12 +49,12 @@ export const swiperModelData : UTSJSONObject = {
 			r3: 10,
 			r4: 20
 		}
-	},
+	} as ModelStyle,
 	dotStyle: {
 		size: 6,
 		mx: 2,
 		bottom: 10,
 		pb: 10,
 		justifyContent: 'center'
-	}
+	} as DotStyle
 }

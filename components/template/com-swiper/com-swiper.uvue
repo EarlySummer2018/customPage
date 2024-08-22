@@ -23,7 +23,7 @@
 			<view class="indicator-dots-item"
 				:style="setDotStyle()"
 				:class="{
-					'active-dot': item - 1 === currentActiveSwiper
+					'active-dot': item === currentActiveSwiper
 				}"
 				v-for="item in modelContent.length"
 				:key="item">
@@ -34,9 +34,8 @@
 
 <script setup
 	lang="uts">
-	import { handleJump, px2rpx } from '@/utils';
-	import { useModelData } from '@/components/template/hooks/useModelData.uts'
-	import { DotStyle, ModelStyle, ModelOptions } from './type';
+	import { handleJump, px2rpx, removeEmptyKeys } from '@/utils';
+	import { DotStyle, ModelStyle, ModelOptions, ModelContent, BorderRadius } from './type';
 	const props = defineProps({
 		modelData: {
 			type: Object as PropType<UTSJSONObject>,
@@ -44,17 +43,76 @@
 			default: () : UTSJSONObject => ({})
 		}
 	})
-	const {
-		modelOptions,
-		modelStyle,
-		modelContent,
-		setContainerStyle,
-		setContentStyle
-	} = useModelData(props.modelData)
-
+	/** 组件数据 */
+	const modelContent = ref<ModelContent[]>([])
+	/** 组件属性 */
+	const modelOptions = ref<ModelOptions>({
+		circular: true,
+		vertical: true,
+		interval: 3000,
+		autoplay: true,
+	})
+	/** 组件样式 */
+	const modelStyle = ref<ModelStyle>({
+		bgColor: '#f6f6f7',
+		px: 10,
+		py: 10,
+		contentBgColor: '#fff',
+		contentHeight: 35,
+		borderRadius: {
+			r1: 5,
+			r2: 5,
+			r3: 5,
+			r4: 5
+		},
+		bgImage: '',
+		contentBgImage: ''
+	})
+	/** 指示器样式 */
+	const dotStyle = ref<DotStyle>({
+		size: 6,
+		mx: 2,
+		bottom: 10,
+		pb: 10,
+		justifyContent: 'center'
+	})
+	
+	/** 设置外层容器样式 */
+	const setContainerStyle = () : UTSJSONObject => {
+		const { px, py, bgColor, bgImage } = modelStyle.value
+		const styleObj = {
+			padding: `${px2rpx(py as number)} ${px2rpx(px as number)}`,
+			background: ''
+		}
+		if (bgImage !== '' && bgImage != null) {
+			styleObj.background = `url(${bgImage}) no-repeat 0 0 / ceover`
+		} else {
+			styleObj.background = bgColor
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	
+	/** 设置内层容器样式 */
+	const setContentStyle = () : UTSJSONObject => {
+		const { contentBgColor, contentBgImage, contentHeight } = modelStyle.value
+		const { r1, r2, r3, r4 } : BorderRadius = modelStyle.value.borderRadius
+		const styleObj = {
+			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
+			background: '',
+			height: px2rpx(contentHeight),
+			overflow: 'hidden'
+		}
+		if (contentBgImage !== '' && contentBgImage !== null) {
+			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
+		} else {
+			styleObj.background = contentBgColor ?? ''
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	
 	const setDotContainerStyle = () : UTSJSONObject => {
-		const { px, py, contentHeight } = props.modelData.style as ModelStyle
-		const { size, mx, bottom, pb, justifyContent } = props.modelData.dotStyle as DotStyle
+		const { px, py, contentHeight } = modelStyle.value
+		const { size, mx, bottom, pb, justifyContent } = dotStyle.value
 		const width = `calc(100% - ${px2rpx(px * 2)})`
 		if (modelOptions.value.vertical) {
 			const jc = {
@@ -71,28 +129,38 @@
 				justifyContent: jc[justifyContent],
 			}
 		}
+		const h = size + pb
 		return {
 			width,
-			height: px2rpx(size + pb),
+			height: px2rpx(h  as number),
 			left: px2rpx(px),
 			bottom: px2rpx(px),
-			paddingBottom: px2rpx(pb),
+			paddingBottom: px2rpx(pb as number),
 			justifyContent,
 		}
 	}
+	
 	const setDotStyle = () : UTSJSONObject => {
-		const { mx, size } = props.modelData.dotStyle as DotStyle
-		const { vertical } = props.modelData.options as ModelOptions
+		const { size, mx } = dotStyle.value
 		return {
-			width: px2rpx(size),
-			height: px2rpx(size),
-			margin: vertical ? `${px2rpx(mx)} 0` : `0 ${px2rpx(mx)}`
+			width: px2rpx(size as number),
+			height: px2rpx(size as number),
+			margin: modelOptions.value.vertical ? `${px2rpx(mx as number)} 0` : `0 ${px2rpx(mx as number)}`
 		}
 	}
+	
 	const currentActiveSwiper = ref<number>(0)
+	
 	const handleChangeSwiper = (event : UniSwiperChangeEvent) => {
 		currentActiveSwiper.value = event.detail.current
 	}
+	
+	onMounted(()=>{
+		modelContent.value = props.modelData['content'] as ModelContent[]
+		modelOptions.value = props.modelData['options'] as ModelOptions
+		modelStyle.value = props.modelData['style'] as ModelStyle
+		dotStyle.value = props.modelData['dotStyle'] as DotStyle
+	})
 </script>
 
 <style lang="scss">

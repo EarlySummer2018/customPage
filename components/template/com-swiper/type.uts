@@ -1,8 +1,17 @@
-type BorderRadius = {
+import { LinkItem } from "@/utils"
+
+export type BorderRadius = {
 	r1 : number,
 	r2 : number,
 	r3 : number,
 	r4 : number
+}
+
+export type  ModelContent = {
+	id: string,
+	src: string,
+	name: string | null,
+	link: LinkItem | null
 }
 
 export type ModelOptions = {
@@ -16,13 +25,17 @@ export type ModelStyle = {
 	bgColor : string.ColorString,
 	px : number,
 	py : number,
+	bgImage : string | null,
 	contentHeight : number,
-	borderRadius : BorderRadius
+	borderRadius : BorderRadius,
+	contentBgColor : string.ColorString | null,
+	contentBgImage : string | null,
 }
 
 export type DotStyle = {
 	size : number,
-	mx : number,
+	mx : number | null,
+	pb : number
 	bottom : number,
 	justifyContent: string
 }
