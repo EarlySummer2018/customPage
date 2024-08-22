@@ -66,8 +66,8 @@ const getLinkParams = (params : LinkParams[]) : string => {
 	const result : string[] = []
 	while (params.length > 0) {
 		const item = params.shift()
-		if (item!.value !== '') {
-			result.push(`${item!.key}=${item!.value}`)
+		if (item != null && item.value !== '') {
+			result.push(`${item.key}=${item.value}`)
 		}
 	}
 	return result.join('&')
@@ -77,12 +77,13 @@ const getLinkParams = (params : LinkParams[]) : string => {
  * handleJump 处理跳转
  * @property {LinkItem} linkItem 链接数据
  */
-export const handleJump = (linkItem : LinkItem) : void => {
+export const handleJump = (linkItem ?: LinkItem) => {
 	let params : string = ''
+	if(linkItem == null) return;
 	if (linkItem.form != null) {
-		params = '?' + getLinkParams(linkItem!.form as LinkParams[])
+		params = '?' + getLinkParams(linkItem.form as LinkParams[])
 	}
-	if (linkItem.checkLogin === true) {
+	if (linkItem.checkLogin == true) {
 		// 校验是否登录
 		const token = uni.getStorageSync('token')
 		if (token === '') {
@@ -103,7 +104,7 @@ export const handleJump = (linkItem : LinkItem) : void => {
 		case 'replace':
 			uni.redirectTo({
 				url: `${linkItem.path}${params}`,
-				success(res) {
+				success(_) {
 					console.log('redirectTo success');
 				},
 				fail(error) {
@@ -114,7 +115,7 @@ export const handleJump = (linkItem : LinkItem) : void => {
 		case 'launch':
 			uni.reLaunch({
 				url: `${linkItem.path}${params}`,
-				success(res) {
+				success(_) {
 					console.log('reLaunch success');
 				},
 				fail(error) {
@@ -125,7 +126,7 @@ export const handleJump = (linkItem : LinkItem) : void => {
 		default:
 			uni.navigateTo({
 				url: `${linkItem.path}${params}`,
-				success(res) {
+				success(_) {
 					console.log('navigateTo success');
 				},
 				fail(error) {
