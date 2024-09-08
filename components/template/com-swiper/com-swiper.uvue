@@ -1,32 +1,46 @@
 <template>
-	<view class="com-swiper_warp"
-		:style="setContainerStyle()">
-		<swiper class="com-swiper"
-			:style="setContentStyle()"
-			:circular="modelOptions.circular"
-			:vertical="modelOptions.vertical"
-			:interval="modelOptions.interval"
-			:autoplay="modelOptions.autoplay"
-			:indicator-dots="false"
-			:rebound="false"
-			@change="handleChangeSwiper">
-			<swiper-item class="com-swiper-item"
-				v-for="item in modelContent"
-				:key="item.id"
-				@click="handleJump(item.link)">
-				<com-image :src="item.src"
-					mode="aspectFill"></com-image>
-			</swiper-item>
-		</swiper>
-		<view class="indicator-dots"
-			:style="setDotContainerStyle()">
-			<view class="indicator-dots-item"
+	<view
+		class="com-swiper_warp"
+		:style="setContainerStyle()"
+	>
+		<view :style="setSwiperStyle()">
+			<swiper class="com-swiper"
+				:style="setContentStyle()"
+				:circular="modelOptions.circular"
+				:vertical="modelOptions.vertical"
+				:interval="modelOptions.interval"
+				:autoplay="modelOptions.autoplay"
+				:indicator-dots="false"
+				:rebound="false"
+				@change="handleChangeSwiper"
+				@touchstart="touchSwiperStart"
+				@touchend="touchSwiperEnd">
+				<swiper-item
+					class="com-swiper-item"
+					
+					v-for="item in modelContent"
+					:key="item.id"
+					@click="handleJump(item.link)">
+					<com-image
+						:src="item.src"
+						mode="aspectFill"
+					></com-image>
+				</swiper-item>
+			</swiper>
+		</view>
+		<view
+			class="indicator-dots"
+			:style="setDotContainerStyle()"
+		>
+			<view
+				class="indicator-dots-item"
 				:style="setDotStyle()"
 				:class="{
-					'active-dot': item === currentActiveSwiper
+					'active-dot': index === currentActiveSwiper
 				}"
-				v-for="item in modelContent.length"
-				:key="item">
+				v-for="(_, index) in modelContent.length"
+				:key="index"
+			>
 			</view>
 		</view>
 	</view>
@@ -43,6 +57,7 @@
 			default: () : UTSJSONObject => ({})
 		}
 	})
+	const autoPlay = ref<boolean>(false)
 	/** 组件数据 */
 	const modelContent = ref<ModelContent[]>([])
 	/** 组件属性 */
@@ -98,9 +113,8 @@
 		const { r1, r2, r3, r4 } : BorderRadius = modelStyle.value.borderRadius
 		const styleObj = {
 			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
-			background: '',
+			background: 'transparent',
 			height: px2rpx(contentHeight),
-			overflow: 'hidden'
 		}
 		if (contentBgImage !== '' && contentBgImage !== null) {
 			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
@@ -110,10 +124,22 @@
 		return removeEmptyKeys(styleObj)
 	}
 	
+	// 设置每一项样式
+	const setSwiperStyle = () => {
+		const { r1, r2, r3, r4 } : BorderRadius = modelStyle.value.borderRadius
+		return {
+			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
+			width: '100%',
+			height: '100%',
+			overflow: 'hidden'
+		}
+	}
+	
 	const setDotContainerStyle = () : UTSJSONObject => {
 		const { px, py, contentHeight } = modelStyle.value
 		const { size, mx, bottom, pb, justifyContent } = dotStyle.value
-		const width = `calc(100% - ${px2rpx(px * 2)})`
+		const windowWidth : number = uni.getSystemInfoSync().windowWidth
+		const width = `${parseInt(px2rpx(windowWidth), 10) - parseInt(px2rpx(px * 2), 10)}rpx`
 		if (modelOptions.value.vertical) {
 			const jc = {
 				'flex-start': 'flex-end',
@@ -155,18 +181,27 @@
 		currentActiveSwiper.value = event.detail.current
 	}
 	
+	// 用户点击/滑动轮播图，禁止自动轮播
+	const touchSwiperStart = () => {
+		autoPlay.value = false
+	}
+	// 用户手指离开轮播图，开启自动轮播
+	const touchSwiperEnd = (e) => {
+		autoPlay.value = modelOptions.value.autoplay
+	}
 	onMounted(()=>{
 		modelContent.value = props.modelData['content'] as ModelContent[]
 		modelOptions.value = props.modelData['options'] as ModelOptions
 		modelStyle.value = props.modelData['style'] as ModelStyle
 		dotStyle.value = props.modelData['dotStyle'] as DotStyle
+		autoPlay.value = modelOptions.value.autoplay
 	})
 </script>
 
 <style lang="scss">
 	.com-swiper_warp {
 		position: relative;
-
+		
 		.com-swiper {
 			width: 100%;
 			background-color: transparent;
@@ -174,6 +209,7 @@
 			&-item {
 				width: 100%;
 				height: 100%;
+				background-color: transparent;
 			}
 		}
 

@@ -1,0 +1,31 @@
+import { LinkItem } from "@/utils"
+
+export type BorderRadius = {
+	r1 : number,
+	r2 : number,
+	r3 : number,
+	r4 : number
+}
+
+export type ModelStyle = {
+	iconSize : number,
+	bgColor : string.ColorString,
+	bgImage : string.ImageURIString | null,
+	px : number,
+	py : number,
+	contentPx : number,
+	contentPy : number,
+	color : string.ColorString,
+	fontSize : number,
+	contentBgColor : string.ColorString,
+	borderRadius : BorderRadius
+}
+export type ModelContent = {
+	id : string,
+	title : string,
+	icon : string.ImageURIString,
+	link : LinkItem | null
+}
+export type ModelOptions = {
+	row : number
+}

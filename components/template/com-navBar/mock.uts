@@ -1,0 +1,50 @@
+import { ModelContent, ModelStyle, ModelOptions } from "./type";
+export const navBarData = {
+	content: [{
+		id: '1',
+		title: '导航1',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	},
+	{
+		id: '1',
+		title: '导航2',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	},{
+		id: '1',
+		title: '导航3',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	},{
+		id: '1',
+		title: '导航4',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	},{
+		id: '1',
+		title: '导航5',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	},{
+		id: '1',
+		title: '导航6',
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+	}] as ModelContent[],
+	options: {
+		row: 5
+	} as ModelOptions,
+	style: {
+		iconSize: 40,
+		fontSize: 12,
+		color: '#000',
+		bgColor: '#f6f6f7',
+		bgImage: '',
+		px: 10,
+		py: 10,
+		contentBgColor: '#fff',
+		contentPx: 0,
+		contentPy: 15,
+		borderRadius: {
+			r1: 10,
+			r2: 10,
+			r3: 10,
+			r4: 10
+		}
+	} as ModelStyle
+}

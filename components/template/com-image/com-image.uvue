@@ -1,27 +1,26 @@
 <template>
 	<view class="com-image_warp">
-		<image v-show="isSuccess"
+		<image
 			class="com-image"
 			:src="src"
 			:mode="mode"
 			lazy-load
 			@error="handleError"
 			@load="handleLoad"></image>
-		<view class="com-image-loading"
-			v-if="isLoading && showLoading"></view>
 		<view class="com-image-error"
-			v-if="isError">
+			v-if="!src || isError">
 			<text class="txt"
 				v-if="showErrMsg">{{ errMsg }}</text>
 			<template v-else>
 				<slot></slot>
 			</template>
 		</view>
+		<view class="com-image-loading"
+			v-else-if="isLoading && showLoading"></view>
 	</view>
 </template>
 
-<script lang="uts"
-	setup>
+<script lang="uts" setup>
 	defineProps({
 		src: {
 			type: String,
@@ -50,13 +49,12 @@
 		isSuccess.value = false
 		isLoading.value = false
 		errMsg.value = error.detail.errMsg
-		console.error('Image loading failed：', error)
+		console.error(`Image loading failed：${errMsg.value}`)
 	}
 	const handleLoad = () : void => {
 		isError.value = false
 		isSuccess.value = true
 		isLoading.value = false
-		console.log('Image Loading completed')
 	}
 </script>
 

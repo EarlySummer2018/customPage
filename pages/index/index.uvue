@@ -2,13 +2,14 @@
 	<view>
 		<com-swiper :modelData="swiperModelData"></com-swiper>
 		<com-search :modelData="searchModelData"></com-search>
+		<com-navBar :modelData="navBarData"></com-navBar>
 	</view>
 </template>
 
-<script setup
-	lang="uts">
+<script setup lang="uts">
 	import { swiperModelData } from '@/components/template/com-swiper/mock';
 	import { searchModelData } from '@/components/template/com-search/mock';
+	import { navBarData } from '@/components/template/com-navBar/mock';
 </script>
 
 <style>

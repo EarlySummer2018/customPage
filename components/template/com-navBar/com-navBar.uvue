@@ -1,0 +1,160 @@
+<template>
+	<view
+		class="com-navBar"
+		:style="setContainerStyle()"
+	>
+		<view
+			ref="listContainer"
+			class="com-navBar-list"
+			:style="setContentStyle()"
+		>
+			<!-- #ifndef APP-ANDROID -->
+			<view
+				class="com-navBar-list-item"
+				:style="setItemWidth(index)"
+				v-for="(item, index) in modelContent"
+				:key="item.id"
+				@click="handleJump(item.link)"
+			>
+				<view
+					class="com-navBar-list-item-icon"
+					:style="{
+						width: px2rpx(modelStyle.iconSize),
+						height: px2rpx(modelStyle.iconSize)
+					}"
+				>
+					<com-image :src="item.icon" model="aspectFill"></com-image>
+				</view>
+				<text
+					class="com-navBar-list-item-title"
+					:style="{
+						fontSize: px2rpx(modelStyle.fontSize),
+						color: modelStyle.color
+					}"
+				>{{item.title}}</text>
+			</view>
+			<!-- #endif -->
+		</view>
+	</view>
+</template>
+
+<script lang="uts"
+	setup>
+	import { px2rpx, removeEmptyKeys, isExist, handleJump } from '@/utils';
+	const props = defineProps({
+		modelData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
+		}
+	})
+	import { ModelContent, ModelStyle, ModelOptions, BorderRadius } from './type'
+	const listContainer = ref<UniElement | null>(null)
+	const windowWidth = ref<number>(375);
+	/** 组件数据 */
+	const modelContent = ref<ModelContent[]>([])
+	/** 组件属性 */
+	const modelOptions = ref<ModelOptions>({
+		row: 5
+	})
+	/** 组件样式 */
+	const modelStyle = ref<ModelStyle>({
+		iconSize: 40,
+		bgColor: '#f6f6f7',
+		bgImage: '',
+		px: 10,
+		py: 10,
+		fontSize: 12,
+		color: '#000',
+		contentPx : 0,
+		contentPy : 10,
+		contentBgColor: '#fff',
+		borderRadius: {
+			r1: 1,
+			r2: 5,
+			r3: 10,
+			r4: 20
+		}
+	})
+
+	/** 设置外层容器样式 */
+	const setContainerStyle = () : UTSJSONObject => {
+		const styleObj = {
+			padding: `${px2rpx(modelStyle.value.py as number)} ${px2rpx(modelStyle.value.px as number)}`,
+			background: ''
+		}
+		if (modelStyle.value.bgImage !== '' && modelStyle.value.bgImage != null) {
+			styleObj.background = `url(${modelStyle.value.bgImage}) no-repeat 0 0 / ceover`
+		} else if (modelStyle.value.bgColor != '') {
+			styleObj.background = modelStyle.value.bgColor
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	/** 设置内层容器样式 */
+	const setContentStyle = () : UTSJSONObject => {
+		const { contentBgColor, contentBgImage, contentPx, contentPy } = modelStyle.value
+		const { r1, r2, r3, r4 } : BorderRadius = modelStyle.value.borderRadius
+		const styleObj = {
+			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
+			background: 'transparent',
+			padding: `${px2rpx(contentPy || 15)} ${px2rpx(contentPx || 0)}`
+		}
+		if (isExist(contentBgImage)) {
+			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
+		} else {
+			styleObj.background = contentBgColor ?? ''
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	const setItemWidth = (index : number) => {
+		const { px } = modelStyle.value
+		const { row } = modelOptions.value
+		const contentPxWidth = windowWidth.value - px * 2
+		return {
+			width: px2rpx(contentPxWidth / row),
+			marginTop: index < row ? '0px' : '30rpx'
+		}
+	}
+	// 使用 draw api 绘制金刚区每一项，优化层级问题
+	const drawItem = () => {
+		if (!listContainer.value) {
+			return;
+		}
+		// 计算每个区域的宽度
+		const width : number = windowWidth.value / modelOptions.value.row
+		// 获取绘制上下文
+		const ctx = listContainer.value.getDrawableContext()
+		console.log(ctx, '9999');
+	}
+	
+	onMounted(() => {
+		windowWidth.value = uni.getSystemInfoSync().windowWidth
+		modelContent.value = props.modelData['content'] as ModelContent[]
+		modelOptions.value = props.modelData['options'] as ModelOptions
+		modelStyle.value = props.modelData['style'] as ModelStyle
+		// #ifdef APP-ANDROID
+		drawItem();
+		// #endif
+	})
+</script>
+
+<style lang="scss">
+	.com-navBar {
+		&-list {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			flex-direction: row;
+			height: auto;
+			&-item {
+				display: flex;
+				align-items: center;
+				flex-shrink: 0;
+				margin-top: 30rpx;
+				&-icon {
+					margin-bottom: 10rpx;
+				}
+			}
+		}
+	}
+</style>

@@ -4,7 +4,7 @@
 			<com-image :showErrMsg="false" :src="modelOptions.logo"></com-image>
 		</view>
 		<view class="com-search" :style="setContentStyle()" @click="handleJump(modelOptions.link as LinkItem)">
-			<view class="com-search-icon" :style="setIconStyle('icon')">
+			<view class="com-search-icon" :style="setIconStyle('icon')" v-if="modelOptions.icon">
 				<com-image :showErrMsg="false" :src="modelOptions.icon"></com-image>
 			</view>
 			<text class="com-search-placeholder" :style="setPlaceHolderStyle()">

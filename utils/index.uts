@@ -163,3 +163,13 @@ export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
 	}
 	return newData
 }
+
+/**
+ * isExist 判断是否为空
+ * @property {T} data 泛型 T ，根据传入类型自动推断
+ * @returns boolean 返回布尔类型，true 就是不为空，false 就是为空
+ */
+export function isExist<T>(data : T) : boolean {
+	const emptyArr = ['', null, 'null', undefined, 'undefined']
+	return !emptyArr.includes(data)
+}

@@ -3,7 +3,7 @@ export const searchModelData : UTSJSONObject = {
 	options: {
 		placeholder: '请输入搜索关键字',
 		icon: 'https://img0.baidu.com/it/u=2518681441,2799966999&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-		logo: '',
+		logo: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
 		logoPosition: 'right',
 		link: {
 			id: '1',
