@@ -48,7 +48,7 @@
 
 <script setup
 	lang="uts">
-	import { handleJump, px2rpx, removeEmptyKeys } from '@/utils';
+	import { handleJump, isExist, px2rpx, removeEmptyKeys } from '@/utils';
 	import { DotStyle, ModelStyle, ModelOptions, ModelContent, BorderRadius } from './type';
 	const props = defineProps({
 		modelData: {
@@ -116,7 +116,7 @@
 			background: 'transparent',
 			height: px2rpx(contentHeight),
 		}
-		if (contentBgImage !== '' && contentBgImage !== null) {
+		if (isExist(contentBgImage)) {
 			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
 		} else {
 			styleObj.background = contentBgColor ?? ''
@@ -125,8 +125,8 @@
 	}
 	
 	// 设置每一项样式
-	const setSwiperStyle = () => {
-		const { r1, r2, r3, r4 } : BorderRadius = modelStyle.value.borderRadius
+	const setSwiperStyle = () : UTSJSONObject => {
+		const { r1, r2, r3, r4 } = modelStyle.value.borderRadius as BorderRadius
 		return {
 			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
 			width: '100%',
@@ -186,7 +186,7 @@
 		autoPlay.value = false
 	}
 	// 用户手指离开轮播图，开启自动轮播
-	const touchSwiperEnd = (e) => {
+	const touchSwiperEnd = () => {
 		autoPlay.value = modelOptions.value.autoplay
 	}
 	onMounted(()=>{

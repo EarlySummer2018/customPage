@@ -8,7 +8,7 @@
 			@error="handleError"
 			@load="handleLoad"></image>
 		<view class="com-image-error"
-			v-if="!src || isError">
+			v-if="isError">
 			<text class="txt"
 				v-if="showErrMsg">{{ errMsg }}</text>
 			<template v-else>

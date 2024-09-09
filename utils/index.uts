@@ -150,6 +150,16 @@ export const px2rpx = (px : number) : string => {
 }
 
 /**
+ * rpxToPx 将换算后的 rpx 转成当前设备对应的 px
+ * 
+ * @property {string | number} rpx 需要换算的值，单位：rpx
+ * @returns {string} 返回换算后的值，不带单位
+*/
+export const rpxToPx = (px : number) : number => {
+	return uni.rpx2px(parseInt(px2rpx(px), 10))
+}
+
+/**
  * removeEmptyKeys 移除值为空的 key
  * @property {UTSJSONObject} obj 要操作的对象
  * @returns {UTSJSONObject} 返回处理后的对象
@@ -170,6 +180,11 @@ export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
  * @returns boolean 返回布尔类型，true 就是不为空，false 就是为空
  */
 export function isExist<T>(data : T) : boolean {
-	const emptyArr = ['', null, 'null', undefined, 'undefined']
-	return !emptyArr.includes(data)
+	// #ifdef APP-ANDROID
+	return data != null && data != ''
+	// #endif
+	// #ifndef APP-ANDROID
+	let emptyArr = ['', null, 'null', undefined, 'undefined']
+	return emptyArr.includes(data)
+	// #endif
 }

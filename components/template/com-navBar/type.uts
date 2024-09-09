@@ -18,6 +18,7 @@ export type ModelStyle = {
 	color : string.ColorString,
 	fontSize : number,
 	contentBgColor : string.ColorString,
+	contentBgImage : string.ImageURIString,
 	borderRadius : BorderRadius
 }
 export type ModelContent = {

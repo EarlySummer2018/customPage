@@ -40,7 +40,7 @@
 
 <script lang="uts"
 	setup>
-	import { px2rpx, removeEmptyKeys, isExist, handleJump } from '@/utils';
+	import { px2rpx, rpxToPx, removeEmptyKeys, isExist, handleJump } from '@/utils';
 	const props = defineProps({
 		modelData: {
 			type: Object as PropType<UTSJSONObject>,
@@ -69,6 +69,7 @@
 		contentPx : 0,
 		contentPy : 10,
 		contentBgColor: '#fff',
+		contentBgImage: '',
 		borderRadius: {
 			r1: 1,
 			r2: 5,
@@ -97,7 +98,7 @@
 		const styleObj = {
 			borderRadius: `${px2rpx(r1 as number)} ${px2rpx(r2 as number)}  ${px2rpx(r3 as number)}  ${px2rpx(r4 as number)}`,
 			background: 'transparent',
-			padding: `${px2rpx(contentPy || 15)} ${px2rpx(contentPx || 0)}`
+			padding: `${px2rpx(contentPy)} ${px2rpx(contentPx)}`
 		}
 		if (isExist(contentBgImage)) {
 			styleObj.background = `url(${contentBgImage}) no-repeat 0 0 / ceover`
@@ -106,7 +107,7 @@
 		}
 		return removeEmptyKeys(styleObj)
 	}
-	const setItemWidth = (index : number) => {
+	const setItemWidth = (index : number) : UTSJSONObject => {
 		const { px } = modelStyle.value
 		const { row } = modelOptions.value
 		const contentPxWidth = windowWidth.value - px * 2
@@ -117,14 +118,22 @@
 	}
 	// 使用 draw api 绘制金刚区每一项，优化层级问题
 	const drawItem = () => {
-		if (!listContainer.value) {
+		if (!isExist(listContainer.value)) {
 			return;
 		}
+		const { px } = modelStyle.value
 		// 计算每个区域的宽度
-		const width : number = windowWidth.value / modelOptions.value.row
+		const cWidth = windowWidth.value - rpxToPx(px * 2)
+		const width : number = cWidth / modelOptions.value.row
 		// 获取绘制上下文
-		const ctx = listContainer.value.getDrawableContext()
-		console.log(ctx, '9999');
+		const ctx = listContainer.value!.getDrawableContext()
+		for (var i = 0; i < modelContent.value.length; i++) {
+			const x : number = width * i
+			const y : number = width * Math.floor(i / modelOptions.value.row)
+			ctx!.fillRect(x, y, width, width)
+			ctx!.fillStyle = `rgb(${Math.floor(255 - 42.5 * i)},${Math.floor(255 - 32.5 * i)},0)`
+		}
+		ctx?.update()
 	}
 	
 	onMounted(() => {
@@ -145,7 +154,7 @@
 			align-items: center;
 			flex-wrap: wrap;
 			flex-direction: row;
-			height: auto;
+			height: 200rpx;
 			&-item {
 				display: flex;
 				align-items: center;

@@ -40,6 +40,7 @@ export const navBarData = {
 		contentBgColor: '#fff',
 		contentPx: 0,
 		contentPy: 15,
+		contentBgImage: '',
 		borderRadius: {
 			r1: 10,
 			r2: 10,
