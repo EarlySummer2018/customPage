@@ -1,0 +1,26 @@
+import { LinkItem } from "@/utils"
+
+export type ModuleContent = {
+	text: string
+}
+
+export type ModuleOptions = {
+	align : string,
+	justify : string,
+	link : LinkItem | null
+}
+
+export type ModuleStyle = {
+	bgColor : string.ColorString,
+	px : number,
+	py : number,
+	fontSize: number,
+	fontWeight: number,
+	color: string.ColorString
+}
+
+export type ModuleData = {
+	content : ModuleContent,
+	options : ModuleOptions,
+	style : ModuleStyle
+}

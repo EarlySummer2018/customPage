@@ -1,0 +1,40 @@
+<template>
+	<!-- <com-component-style :curStyle="moduleStyle"> -->
+		<view class="com-polyline" :style="polylineStyle">
+		</view>
+	<!-- </com-component-style> -->
+</template>
+<script lang="uts" setup>
+	import { px2rpx } from '@/utils';
+	import { ModuleStyle } from './type'
+	const props = defineProps({
+		moduleData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
+		}
+	})
+	/** 组件样式 */
+	const moduleStyle = ref<ModuleStyle>({
+		lineColor : '#eee',
+		lineSize : 2,
+		lineStyle : 'dashed'
+	})
+	const polylineStyle = ref<string>('')
+	const setStyle = () : void => {
+		const { lineColor, lineSize, lineStyle } = moduleStyle.value;
+		polylineStyle.value = `border-top: ${px2rpx(lineSize)} ${lineStyle} ${lineColor};`
+	}
+	onMounted(()=>{
+		moduleStyle.value = props.moduleData['style'] as ModuleStyle
+		setStyle()
+	})
+</script>
+
+<style lang="scss">
+	.com-polyline {
+		width: 100%;
+		height: 0;
+		border: none;
+	}
+</style>

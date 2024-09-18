@@ -3,6 +3,8 @@
 		<com-swiper :modelData="swiperModelData"></com-swiper>
 		<com-search :modelData="searchModelData"></com-search>
 		<com-navBar :modelData="navBarData"></com-navBar>
+		<com-blank :moduleData="blankData"></com-blank>
+		<com-polyline :moduleData="polylineData"></com-polyline>
 	</view>
 </template>
 
@@ -10,6 +12,8 @@
 	import { swiperModelData } from '@/components/template/com-swiper/mock';
 	import { searchModelData } from '@/components/template/com-search/mock';
 	import { navBarData } from '@/components/template/com-navBar/mock';
+	import { blankData } from '@/components/template/com-blank/mock.uts'
+	import { polylineData } from '@/components/template/com-polyline/mock.uts'
 </script>
 
 <style>

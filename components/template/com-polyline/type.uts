@@ -1,0 +1,23 @@
+import { LinkItem } from "@/utils"
+
+export type ModuleContent = {
+	text: string
+}
+
+export type ModuleOptions = {
+	align : string,
+	justify : string,
+	link : LinkItem | null
+}
+
+export type ModuleStyle = {
+	lineColor : string.ColorString,
+	lineSize : number,
+	lineStyle : string
+}
+
+export type ModuleData = {
+	content : ModuleContent,
+	options : ModuleOptions,
+	style : ModuleStyle
+}

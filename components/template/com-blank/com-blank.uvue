@@ -1,0 +1,69 @@
+<template>
+	<view class="com-blank" :style="blankStyle">
+		<text
+			:style="{
+				fontSize: px2rpx(moduleStyle.fontSize),
+				fontWeight: moduleStyle.fontWeight,
+				color: moduleStyle.color
+			}"
+			v-if="moduleContent.text"
+		>
+			{{ moduleContent.text }}
+		</text>
+	</view>
+</template>
+
+<script lang="uts" setup>
+	import { px2rpx } from '@/utils'
+	import { ModuleContent, ModuleOptions, ModuleStyle } from './type'
+	const props = defineProps({
+		moduleData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
+		}
+	})
+	/** 组件数据 */
+	const moduleContent = ref<ModuleContent>({
+		text: ''
+	})
+	/** 组件属性 */
+	const moduleOptions = ref<ModuleOptions>({
+		align: 'center',
+		justify: 'center',
+		link: null,
+	})
+	/** 组件样式 */
+	const moduleStyle = ref<ModuleStyle>({
+		bgColor: 'pink',
+		px: 10,
+		py: 10,
+		fontSize: 12,
+		fontWeight: 500,
+		color: '#000'
+	})
+	const blankStyle = ref<string>('')
+	const setStyle = () : void => {
+		const { bgColor, px, py } = moduleStyle.value as ModuleStyle
+		const { align, justify } = moduleOptions.value as ModuleOptions
+		const styleArr : string[] = []
+		styleArr.push(`background-color:${bgColor}`)
+		styleArr.push(`align-items:${align}`)
+		styleArr.push(`justify-content:${justify}`)
+		styleArr.push(`padding:${px2rpx(py)} ${px2rpx(px)}`)
+		blankStyle.value = styleArr.join(';')
+	}
+	onMounted(()=>{
+		moduleContent.value = props.moduleData['content'] as ModuleContent
+		moduleOptions.value = props.moduleData['options'] as ModuleOptions
+		moduleStyle.value = props.moduleData['style'] as ModuleStyle
+		setStyle()
+	})
+</script>
+
+<style lang="scss">
+	.com-blank {
+		width: 100%;
+		display: flex;
+	}
+</style>

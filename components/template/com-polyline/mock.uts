@@ -1,0 +1,9 @@
+import { ModuleStyle } from "./type";
+
+export const polylineData : UTSJSONObject = {
+	style: {
+		lineColor : '#eee',
+		lineSize : 2,
+		lineStyle : 'dashed'
+	} as ModuleStyle
+}

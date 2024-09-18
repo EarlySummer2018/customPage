@@ -1,0 +1,20 @@
+import { ModuleContent, ModuleOptions, ModuleStyle } from "./type";
+
+export const blankData : UTSJSONObject = {
+	content: {
+		text: '我是空白辅助'
+	} as ModuleContent,
+	options: {
+		align: 'center',
+		justify: 'center',
+		link: null,
+	} as ModuleOptions,
+	style: {
+		bgColor: 'pink',
+		px: 10,
+		py: 10,
+		fontSize: 12,
+		fontWeight: 500,
+		color: '#000'
+	} as ModuleStyle
+}
