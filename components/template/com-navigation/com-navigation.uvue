@@ -1,0 +1,300 @@
+<template>
+	<view class="com-navigator">
+		<view class="navigation-bar-placeholder" v-if="!isImmersive" :style="wrapperStyle"></view>
+		<view class="navigation-bar-wrapper" :style="wrapperStyle">
+			<view
+				class="navigation-bgImg"
+				:class="{
+					pageBg: !bgImg
+				}"
+				:style="{
+					backgroundColor: backgroundColor,
+					backgroundImage:
+						bgImg || pageBg ? `url(${bgImg || pageBg})` : '',
+					opacity: showType === 2 ? opacity : '1'
+				}"
+			></view>
+			<view class="navigation-bar-inner" :style="innerStyle">
+				<view
+					class="navigation-bar-left"
+					:style="leftStyle"
+					@click="jumpHandler"
+					v-if="showLeft"
+				>
+					<template v-if="showBack">
+						<!-- <view class="navigation-bar-btn home" v-if="onlyOnePage">
+								首页
+							</view> -->
+						<view
+							:class="[
+								'navigation-bar-btn',
+								'back',
+								`back-${iconStyle}`
+							]"
+						>
+							<!-- 上一页 -->
+						</view>
+					</template>
+					<template v-else>
+						<slot name="left"></slot>
+					</template>
+				</view>
+				<view
+					:class="[
+						'navigation-bar-center',
+						ellipsis && 'ellipsis-dot'
+					]"
+				>
+					<template v-if="!!title">
+						<text>{{ title }}</text>
+					</template>
+					<template v-else>
+						<view class="menu-botton-left" :style="menuButton">
+							<slot></slot>
+						</view>
+					</template>
+				</view>
+				<view class="navigation-bar-right">
+					<slot name="right"></slot>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script lang="uts" setup>
+	const props = defineProps({
+			title: {
+				type: String,
+				default: ''
+			},
+			color: {
+				type: String,
+				default: '#000000'
+			},
+			backgroundColor: {
+				type: String,
+				default: 'transparent'
+			},
+			bgImg: {
+				type: String,
+				default: ''
+			},
+			showBack: {
+				type: Boolean,
+				default: true
+			},
+			iconStyle: {
+				type: String,
+				default: 'white'
+			},
+			ellipsis: {
+				type: Boolean,
+				default: true
+			},
+			isFixed: {
+				type: Boolean,
+				default: true
+			},
+			showLeft: {
+				type: Boolean,
+				default: false
+			},
+			showType: {
+				type: [Number, String],
+				default: ''
+			},
+			pageBg: {
+				type: String,
+				default: ''
+			},
+			isImmersive: {
+				type: Boolean,
+				default: true
+			},
+			canClickIcon: {
+				type: Boolean,
+				default: true
+			}
+		})
+	const onlyOnePage = ref<boolean>(false)
+	const wrapperStyle = ref<string>('')
+	const innerStyle = ref<string>('')
+	const leftStyle = ref<string>('')
+	const systemInfo = ref<GetSystemInfoResult | null>(null)
+	const opacity = ref<number>(0)
+	const menuButton = ref<string>('')
+	const styleHandler = () : void => {
+		// #ifdef MP
+		let isSupport = !!uni.getMenuButtonBoundingClientRect
+		// #endif
+		// #ifdef APP
+		let isSupport = false
+		// #endif
+		const rect = getApp().globalData.rect
+		const { statusBarHeight, windowWidth, osName } = systemInfo.value as GetSystemInfoResult // 手机状态栏高度
+		let wrapperStyleArr : string[] = [] // 整体样式
+		let innerStyleArr : string[] = [] // 整体样式
+		let leftStyleArr : string[] = [] // 左边按钮区域样式
+		innerStyleArr.push(`padding-top:${statusBarHeight}px`) // 上边距
+		innerStyleArr.push(`color:${props.color}`) // 字体颜色
+		// #ifdef MP-WEIXIN
+		if (osName === 'windows') {
+			const { top } = uni.getMenuButtonBoundingClientRect()
+			innerStyleArr.push(`height: ${top - statusBarHeight + 44}px`) // 高度
+			wrapperStyleArr.push(`height: ${top - statusBarHeight + 44}px`) // 高度
+		} else {
+			innerStyleArr.push(`height: ${statusBarHeight + 44}px`) // 高度
+			wrapperStyleArr.push(`height: ${statusBarHeight + 44}px`) // 高度
+		}
+		// #endif
+		// #ifndef MP-WEIXIN
+		innerStyleArr.push(`height: ${statusBarHeight + 44}px`) // 高度
+		wrapperStyleArr.push(`height: ${statusBarHeight + 44}px`) // 高度
+		// #endif
+		if (!props.isFixed) {
+			wrapperStyleArr.push('position: relative')
+		}
+		if (isSupport && rect) {
+			if(osName !== 'windows') {
+				innerStyleArr.push(
+					`padding-right:${windowWidth - rect.left}px`
+				) // 右边距
+			}
+			leftStyleArr.push(`width:${windowWidth - rect.left}px`) // 左边返回区域宽度
+		}
+		// #ifndef APP
+		menuButton.value = `height:${rect.height}px;margin-top:${
+			rect.top - statusBarHeight
+		}px;`
+		// #endif
+		// #ifdef APP
+		menuButton.value = `height:${rect.height}px;`
+		// #endif
+		wrapperStyle.value = wrapperStyleArr.join(';')
+		innerStyle.value = innerStyleArr.join(';')
+		leftStyle.value = leftStyleArr.join(';')
+	}
+	// 页面跳转
+	const jumpHandler = () : void => {
+		if (!props.canClickIcon) return;
+		if (onlyOnePage.value) {
+			uni.reLaunch({
+				url: '/pages/index/index'
+			})
+		} else {
+			uni.navigateBack({
+				delta: 1
+			})
+		}
+	}
+	onMounted(()=>{
+		systemInfo.value = uni.getSystemInfoSync()
+		onlyOnePage.value = getCurrentPages().length === 1
+		styleHandler()
+	})
+</script>
+
+<style lang="scss">
+	.com-navigator {
+		// position: fixed;
+		// top: 0;
+		// left: 0;
+		// width: 100%;
+		// z-index: 2;
+		overflow: hidden;
+
+		.navigation-bar-wrapper {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 520;
+		}
+		.navigation-bgImg {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: 50% center;
+			&.pageBg {
+				background-size: 100% auto;
+				background-position: 0 0;
+			}
+		}
+		.navigation-bar-top {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			width: 100vw;
+			height: r(88px); // 动态配置
+			// background-color: #ffffff;
+			z-index: 2;
+		}
+
+		.navigation-bar-inner {
+			position: relative;
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			width: 100vw;
+			height: r(128px);
+			padding-top: r(88px); // 动态配置
+			z-index: 2;
+		}
+
+		.navigation-bar-left {
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			width: r(194px); // 动态配置
+			height: r(88px);
+			padding-left: r(32px);
+		}
+
+		.navigation-bar-btn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: r(36px);
+			height: r(36px);
+			background: transparent;
+			background-size: 100% 100%;
+
+			&.home {
+				// background-color: rgba($color: #ffffff, $alpha: 0.3);
+				background-image: url(bg('images/selmac/arrow-left.png'));
+				border-radius: 50%;
+			}
+
+			&.back {
+				margin-left: vw(-30);
+				background-image: url(bg('images/selmac/arrow-left.png'));
+			}
+			&.back-black {
+				background-image: url(bg('images/selmac/arrow-left-black.png'));
+			}
+		}
+
+		.navigation-bar-center {
+			display: flex;
+			flex: 1;
+			justify-content: center;
+			overflow: hidden;
+			font-size: r(34px);
+			font-weight: normal;
+			text-align: center;
+
+			&.ellipsis-dot {
+				display: -webkit-box;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				-webkit-line-clamp: 1;
+				/*! autoprefixer: off */
+				-webkit-box-orient: vertical;
+				word-break: break-all;
+			}
+		}
+	}
+</style>
