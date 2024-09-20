@@ -1,26 +1,22 @@
 <template>
 	<view class="com-image-zone">
-		<com-component-style :curStyle="curData.style || null">
+		<!-- <com-component-style :curStyle="curData.style || null"> -->
 			<com-image
-				:src="curData.options.bgImg.url || ''"
-				:tr="curData.style.imgTR"
-				:br="curData.style.imgBR"
+				:src="moduleOptions.bgImg"
+				:tr="moduleStyle.imgTR"
+				:br="moduleStyle.imgBR"
 				mode="widthFix"
 			></com-image>
 			<view
 				class="com-image-zone_item"
-				v-for="(item, index) in curData.content"
+				v-for="(item, index) in moduleContent"
 				:style="{
-					transform: `translate3d(${transformPixel(
-						item.x
-					)}, ${transformPixel(item.y)}, 0px)`,
-					width: transformPixel(item.width),
-					height: transformPixel(item.height),
+					transform: `translate(${px2rpx(item.x)}, ${px2rpx(item.y)})`,
+					width: px2rpx(item.width),
+					height: px2rpx(item.height),
 					zIndex: index + 3,
-					backgroundImage: item.bgImg.url ? `url(${item.bgImg.url})` : ''
 				}"
-				@click="handleZoneItem(item)"
-			>
+			>	
 				<view class="com-image-zone_item-content">
 					<view class="com-image-zone_item-title" v-show="item.showTitle">
 						<text class="txt">{{ item.title }}</text>
@@ -28,31 +24,39 @@
 					<view v-show="item.showDot" class="click-dot"></view>
 				</view>
 			</view>
-		</com-component-style>
+		<!-- </com-component-style> -->
 	</view>
 </template>
-
-<script>
-	import { transformPixel, jumpLink } from '../utils'
-	export default {
-		props: 'ComImageZone',
-		props: {
-			curData: {
-				type: Object,
-				default() {
-					return {}
-				}
-			}
-		},
-		methods: {
-			transformPixel,
-			handleZoneItem(item) {
-				jumpLink(item.link)
-			}
+<script lang="uts" setup>
+	import { px2rpx, handleJump, isExist } from '@/utils'
+	import { ModuleContent, ModuleOptions, ModuleStyle } from './type'
+	const props = defineProps({
+		moduleData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
 		}
+	})
+	/** 组件数据 */
+	const moduleContent = ref<ModuleContent[]>([])
+	/** 组件属性 */
+	const moduleOptions = ref<ModuleOptions>({
+		bgImg: ''
+	})
+	/** 组件样式 */
+	const moduleStyle = ref<ModuleStyle>({
+		imgTR : 0,
+		imgBR : 0,
+	})
+	const drawZone = () => {
+		
 	}
+	onMounted(()=>{
+		moduleContent.value = props.moduleData['content'] as ModuleContent[]
+		moduleOptions.value = props.moduleData['options'] as ModuleOptions
+		moduleStyle.value = props.moduleData['style'] as ModuleStyle
+	})
 </script>
-
 <style lang="scss">
 	.com-image-zone {
 		position: relative;
@@ -61,8 +65,8 @@
 			top: 0;
 			left: 0;
 			background-position: 50% center;
-			    background-size: 100%;
-			    background-repeat: no-repeat;
+			background-size: 100%;
+			background-repeat: no-repeat;
 			&-content {
 				position: absolute;
 				width: 100%;
@@ -78,29 +82,29 @@
 			}
 			&-title {
 				position: relative;
-				font-size: r(16px);
+				font-size: 16rpx;
 				color: white;
 				background-color: rgba($color: #000000, $alpha: 0.8);
-				padding: r(6px) r(20px);
-				border-radius: r(40px);
-				margin-bottom: r(10px);
+				padding: 6rpx 20rpx;
+				border-radius: 40rpx;
+				margin-bottom: 10rpx;
 				display: inline-block;
 				&::after {
 					position: absolute;
 					content: '';
 					width: 0;
 					height: 0;
-					bottom: r(-14px);
+					bottom: -14rpx;
 					left: 50%;
-					border: r(8px) solid transparent;
+					border: 8rpx solid transparent;
 					border-top-color: #000000;
 					transform: translateX(-50%);
 				}
 			}
 			.click-dot {
 				position: relative;
-				width: r(20px);
-				height: r(20px);
+				width: 20rpx;
+				height: 20rpx;
 				&::before {
 					position: absolute;
 					content: '';

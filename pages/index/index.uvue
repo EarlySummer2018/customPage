@@ -1,11 +1,12 @@
 <template>
-	<view>
+	<scroll-view style="flex: 1; background-color: #f8f8f8" :bounces="false">
 		<com-swiper :modelData="swiperModelData"></com-swiper>
 		<com-search :modelData="searchModelData"></com-search>
 		<com-navBar :modelData="navBarData"></com-navBar>
 		<com-blank :moduleData="blankData"></com-blank>
 		<com-polyline :moduleData="polylineData"></com-polyline>
-	</view>
+		<com-imageZone :moduleData="zoneData"></com-imageZone>
+	</scroll-view>
 </template>
 
 <script setup lang="uts">
@@ -14,18 +15,5 @@
 	import { navBarData } from '@/components/template/com-navBar/mock';
 	import { blankData } from '@/components/template/com-blank/mock.uts'
 	import { polylineData } from '@/components/template/com-polyline/mock.uts'
+	import { zoneData } from '@/components/template/com-imageZone/mock.uts'
 </script>
-
-<style>
-	.logo {
-		height: 100px;
-		width: 100px;
-		margin: 100px auto 25px auto;
-	}
-
-	.title {
-		font-size: 18px;
-		color: #8f8f94;
-		text-align: center;
-	}
-</style>

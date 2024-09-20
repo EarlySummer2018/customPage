@@ -1,0 +1,23 @@
+import { LinkItem } from "@/utils"
+
+export type  ModuleContent = {
+	x : number,
+	y : number,
+	width : number,
+	height : number,
+	bgImg : string | null,
+	bgColor : string.ColorString,
+	showDot : boolean,
+	link : LinkItem | null,
+	showTitle : boolean,
+	title : string,
+}
+
+export type ModuleOptions = {
+	bgImg : string | null,
+}
+
+export type ModuleStyle = {
+	imgTR : number,
+	imgBR : number,
+}

@@ -1,0 +1,34 @@
+import { ModuleContent, ModuleOptions, ModuleStyle } from "./type";
+
+export const zoneData : UTSJSONObject = {
+	content: [{
+		x : 0,
+		y : 0,
+		width : 50,
+		height : 30,
+		bgImg : null,
+		bgColor : '',
+		showDot : false,
+		link : null,
+		showTitle : false,
+		title : '',
+	},{
+		x : 10,
+		y : 20,
+		width : 50,
+		height : 30,
+		bgImg : null,
+		bgColor : '',
+		showDot : false,
+		link : null,
+		showTitle : false,
+		title : '',
+	}] as ModuleContent[],
+	options: {
+		bgImg: 'https://aligames-fe.oss-cn-shenzhen.aliyuncs.com/ieu-gdc-mng/106736/files/2024/08/16/ba765ecbe71a4c18abfc3e7bf591aff5.png'
+	} as ModuleOptions,
+	style: {
+		imgTR : 0,
+		imgBR : 0,
+	} as ModuleStyle,
+}
