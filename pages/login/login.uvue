@@ -2,8 +2,7 @@
 	<button @click="handleLogin()">登录</button>
 </template>
 
-<script setup>
-	import { onLoad } from '@dcloudio/uni-app'
+<script setup lang="uts">
 	const callback = ref<string>('')
 	onLoad((options) => {
 		callback.value = decodeURIComponent(options['callback'] as string) as string

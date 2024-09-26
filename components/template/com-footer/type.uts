@@ -1,0 +1,19 @@
+import { LinkItem } from "@/utils"
+
+export type  ModuleContent = {
+	key : string,
+	link : LinkItem,
+	icon : string.ImageURIString,
+	activeIcon : string.ImageURIString,
+	color : string.ColorString,
+	activeColor : string.ColorString,
+	text : string,
+}
+
+export type ModuleOptions = {
+	bgImg ?: string,
+}
+
+export type ModuleStyle = {
+	bgColor ?: string.ColorString,
+}

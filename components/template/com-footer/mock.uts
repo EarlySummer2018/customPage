@@ -1,0 +1,66 @@
+import { ModuleContent, ModuleOptions, ModuleStyle } from "./type";
+
+export const footerData : UTSJSONObject = {
+	content: [{
+		key: '222',
+		link: {
+			id: '1',
+			type: 99,
+			name: '测试链接',
+			path: '/pages/index/index2',
+			checkLogin: true,
+			form: [{
+				value: '321',
+				key: 'navIndex'
+			}]
+		},
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+		activeIcon: 'https://aligames-fe.oss-cn-shenzhen.aliyuncs.com/ieu-gdc-mng/106736/files/2024/08/16/ba765ecbe71a4c18abfc3e7bf591aff5.png',
+		color: '#ccc',
+		activeColor: '#007aff',
+		text: '首页',
+	},{
+		key: '222',
+		link: {
+			id: '1',
+			type: 99,
+			name: '测试链接',
+			path: '/pages/index/index2',
+			checkLogin: true,
+			form: [{
+				value: '321',
+				key: 'navIndex'
+			}]
+		},
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+		activeIcon: 'https://aligames-fe.oss-cn-shenzhen.aliyuncs.com/ieu-gdc-mng/106736/files/2024/08/16/ba765ecbe71a4c18abfc3e7bf591aff5.png',
+		color: '#ccc',
+		activeColor: '#007aff',
+		text: '消息',
+	},{
+		key: '222',
+		link: {
+			id: '1',
+			type: 99,
+			name: '测试链接',
+			path: '/pages/index/index2',
+			checkLogin: true,
+			form: [{
+				value: '321',
+				key: 'navIndex'
+			}]
+		},
+		icon: 'https://ww3.sinaimg.cn/mw690/0072gMhzly1hqi2sn74aij316o240b2c.jpg',
+		activeIcon: 'https://aligames-fe.oss-cn-shenzhen.aliyuncs.com/ieu-gdc-mng/106736/files/2024/08/16/ba765ecbe71a4c18abfc3e7bf591aff5.png',
+		color: '#ccc',
+		activeColor: '#007aff',
+		text: '个人中心',
+	}] as ModuleContent[],
+	options: {
+		bgImg: 'https://aligames-fe.oss-cn-shenzhen.aliyuncs.com/ieu-gdc-mng/106736/files/2024/08/16/ba765ecbe71a4c18abfc3e7bf591aff5.png'
+	} as ModuleOptions,
+	style: {
+		imgTR: 0,
+		imgBR: 0,
+	} as ModuleStyle,
+}

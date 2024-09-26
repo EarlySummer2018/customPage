@@ -1,0 +1,236 @@
+<template>
+	<view
+		class="com-footer"
+		v-if="moduleContent.length"
+	>
+		<view class="com-footer-immersive"></view>
+		<view class="com-footer_content">
+			<view class="com-footer_warp">
+				<view
+					class="com-footer_warp-item"
+					v-for="(item, index) in moduleContent"
+					:key="item.key"
+					@click="changeCurrent(item, index)"
+				>
+					<view class="com-footer_warp-icon">
+						<com-image
+						:src="(current === item.link.navIndex && tabIndex === index ? item.activeIcon : item.icon) || ''"
+						></com-image>
+					</view>
+					<view
+						class="com-footer_warp-text"
+						:style="{
+							color: current === item.link.navIndex && tabIndex === index ? item.activeColor : item.color,
+						}"
+					>
+						{{ item.text }}
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script lang="uts" setup>
+	import { handleJump, isExist } from '@/utils'
+	import { ModuleContent, ModuleOptions, ModuleStyle } from './type'
+	const $emit = defineEmits(['changeIndex'])
+	const props = defineProps({
+		moduleData: {
+			type: Object as PropType<UTSJSONObject>,
+			required: true,
+			default: () : UTSJSONObject => ({})
+		},
+		curIndex: {
+			type: String,
+			default: '',
+		},
+		curTab: {
+			type: Number,
+			default: 0,
+		},
+	})
+	/** 组件数据 */
+	const moduleContent = ref<ModuleContent[]>([])
+	/** 组件属性 */
+	const moduleOptions = ref<ModuleOptions>({
+		bgImg: ''
+	})
+	/** 组件样式 */
+	const moduleStyle = ref<ModuleStyle>({
+		bgColor: '#ffffff'
+	})
+	const current = ref<string>('')
+	const tabIndex = ref<number>(0)
+	watch(
+		() => props.curIndex,
+		(nVal : string) => {
+			if (isExist(nVal)) {
+				current.value = nVal
+			} else {
+				current.value = moduleContent[0].link!.navIndex;
+			}
+	})
+	watch(
+		() => props.curTab,
+		(nVal : number) => {
+			if (isExist(nVal)) {
+				tabIndex.value = nVal
+			} else {
+				tabIndex.value =0
+			}
+	})
+	
+	const changeCurrent = (item : ModuleContent, index : number) => {
+		if (item.link.type !== 99) {
+			handleJump(item.link);
+			return;
+		}
+		current.value = item.link.navIndex as string;
+		tabIndex.value = index;
+		$emit('changeIndex', {
+			navIndex: item.link.navIndex,
+			tabIndex: index,
+			navTitle: item.link.navTitle,
+		});
+	}
+	onMounted(()=>{
+		moduleContent.value = props.moduleData['content'] as ModuleContent[]
+		moduleOptions.value = props.moduleData['options'] as ModuleOptions
+		moduleStyle.value = props.moduleData['style'] as ModuleStyle
+		console.log('moduleContent.value', moduleContent.value);
+		if (isExist(props.curIndex)) {
+			current.value = props.curIndex
+		} else {
+			current.value = moduleContent.value[0].link.navIndex as string;
+		}
+		if (isExist(props.curTab)) {
+			tabIndex.value = props.curTab
+		} else {
+			tabIndex.value = props.curTab;
+		}
+	})
+</script>
+
+<style lang="scss">
+.com-footer {
+	.com-footer-immersive {
+		height: 110rpx;
+		padding-bottom: constant(safe-area-inset-bottom);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	&_content {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		background-color: #fff;
+		box-sizing: content-box;
+		z-index: 99;
+		box-shadow: 0 0 10px 0 #ccc;
+		padding-bottom: constant(safe-area-inset-bottom);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	&_warp {
+		height: 110rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		&-item {
+			position: relative;
+			height: 100%;
+			flex: 1;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			justify-content: center;
+			.tipsBox {
+				display: flex;
+				position: absolute;
+				top: r(-90px);
+				left: 50%;
+				width: 300rpx;
+				height: 80rpx;
+				transform: translateX(-50%);
+				background-color: #2c343f;
+				border-radius: 20rpx;
+				box-shadow: 0rpx 4rpx 16rpx -2rpx #2c343f;
+		
+				z-index: 2;
+				.tipsItem {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					flex: 1;
+					color: #fff;
+					font-size: 28rpx;
+					.icon {
+						width: 40rpx;
+						height: 40rpx;
+						margin-right: 10rpx;
+						&.xiaoxi {
+							background-image: url(bg('dangshou/chat/xiaoxi2.png'));
+						}
+						&.tongzhi {
+							background-image: url(bg('dangshou/chat/tongzhi.png'));
+						}
+					}
+					.text {
+						vertical-align: middle;
+					}
+				}
+				.triangle {
+					position: absolute;
+					bottom: r(-30px);
+					left: 50%;
+					transform: translateX(-50%);
+					width: 0;
+					height: 0;
+					border: 20rpx solid;
+					border-color: #2c343f transparent transparent transparent;
+				}
+			}
+		}
+		&-icon {
+			position: relative;
+			width: 50rpx;
+			height: 50rpx;
+			z-index: 1;
+		}
+		&-cart-num {
+			position: absolute;
+			top: 0;
+			right: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 25rpx;
+			padding: 0 10rpx;
+			display: inline-block;
+			color: #333;
+			color: white;
+			border-radius: 100rpx;
+			background-color: #f1f1f1;
+			font-family: 'Helvetica Neue', Helvetica, sans-serif;
+			font-size: 20rpx;
+			padding: 0rpx 6rpx;
+			z-index: 2;
+			transform: translateX(70%);
+		}
+		.redDot {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 15rpx;
+			height: 15rpx;
+			background-color: red;
+			border-radius: 50%;
+			z-index: 9;
+		}
+		&-text {
+			font-size: 20rpx;
+			margin-top: 5rpx;
+		}
+	}
+}
+</style>

@@ -21,6 +21,12 @@
 </template>
 
 <script lang="uts" setup>
+	/**
+	 * @property {String} src 图片路径
+	 * @property {String} mode 图片渲染模式
+	 * @property {Boolean} showLoading 是否显示加载中
+	 * @property {Boolean} showErrMsg 是否显示错误信息
+	 */
 	defineProps({
 		src: {
 			type: String,

@@ -6,6 +6,7 @@
 		<com-blank :moduleData="blankData"></com-blank>
 		<com-polyline :moduleData="polylineData"></com-polyline>
 		<com-imageZone :moduleData="zoneData"></com-imageZone>
+		<com-footer :moduleData="footerData"></com-footer>
 	</scroll-view>
 </template>
 
@@ -16,4 +17,5 @@
 	import { blankData } from '@/components/template/com-blank/mock.uts'
 	import { polylineData } from '@/components/template/com-polyline/mock.uts'
 	import { zoneData } from '@/components/template/com-imageZone/mock.uts'
+	import { footerData } from '@/components/template/com-footer/mock.uts'
 </script>

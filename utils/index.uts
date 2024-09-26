@@ -43,6 +43,12 @@ export type LinkItem = {
 
 	/** 校验登录 */
 	checkLogin ?: boolean,
+	
+	/** 导航索引 */
+	navIndex ?: string,
+	
+	/** 导航名称 */
+	navTitle ?: string,
 
 	/**
 	 * 跳转方式

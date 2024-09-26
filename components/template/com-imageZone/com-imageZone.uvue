@@ -16,6 +16,7 @@
 					height: px2rpx(item.height),
 					zIndex: index + 3,
 				}"
+				@click="handleJump(item.link)"
 			>	
 				<view class="com-image-zone_item-content">
 					<view class="com-image-zone_item-title" v-show="item.showTitle">
@@ -28,7 +29,7 @@
 	</view>
 </template>
 <script lang="uts" setup>
-	import { px2rpx, handleJump, isExist } from '@/utils'
+	import { px2rpx, handleJump } from '@/utils'
 	import { ModuleContent, ModuleOptions, ModuleStyle } from './type'
 	const props = defineProps({
 		moduleData: {
@@ -48,9 +49,6 @@
 		imgTR : 0,
 		imgBR : 0,
 	})
-	const drawZone = () => {
-		
-	}
 	onMounted(()=>{
 		moduleContent.value = props.moduleData['content'] as ModuleContent[]
 		moduleOptions.value = props.moduleData['options'] as ModuleOptions
