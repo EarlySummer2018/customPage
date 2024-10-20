@@ -1,0 +1,46 @@
+<template>
+	<view class="com-component-container"
+		:class="[className]" :style="setContainerStyle()">
+		<slot></slot>
+	</view>
+</template>
+
+<script setup
+	lang="uts">
+	import { removeEmptyKeys, px2rpx, isExist } from '@/utils/index.uts';
+	import { ContainerStyle } from '../type';
+	const props = defineProps({
+		moduleStyle: {
+			type: Object as PropType<ContainerStyle>,
+			required: true,
+			default: () : ContainerStyle => ({
+				px: 0,
+				py: 0,
+				bgColor: 'transparent'
+			} as ContainerStyle)
+		},
+		className: {
+			type: String,
+			default: ''
+		}
+	})
+	/** 设置外层容器样式 */
+	const setContainerStyle = () : UTSJSONObject => {
+		const { px, py, bgImage, bgColor } = props.moduleStyle as ContainerStyle
+		const styleObj = {
+			padding: `${px2rpx(py)} ${px2rpx(px)}`,
+			background: ''
+		}
+		if (isExist(bgImage)) {
+			styleObj.background = `url(${bgImage}) no-repeat 0 0 / ceover`
+		} else if (isExist(bgColor)) {
+			styleObj.background = bgColor
+		}
+		return removeEmptyKeys(styleObj)
+	}
+	
+</script>
+
+<style lang="scss">
+	.com-component-container {}
+</style>

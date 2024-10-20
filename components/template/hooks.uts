@@ -1,0 +1,15 @@
+import { ContainerStyle } from './type.uts'
+const useModuleData = (modelData: UTSJSONObject) : UTSJSONObject => {
+  const cStyle = ref<ContainerStyle>({
+	  	px: 0,
+	  	py: 0,
+	  	bgColor: 'transparent',
+	  	bgImage: null
+  });
+
+  return {
+    cStyle
+  };
+};
+
+export default useModuleData

@@ -150,7 +150,10 @@ export const handleJump = (linkItem ?: LinkItem) => {
  * @returns {string} 返回换算后的值，带 rpx 单位
 */
 export const px2rpx = (px : number) : string => {
-	const deviceWidth : number = uni.getSystemInfoSync().windowWidth
+	const deviceWidth : number = uni.getSystemInfoSync().screenWidth
+	if (deviceWidth == 0) {
+		return px + 'rpx'
+	}
 	const rpx : number = (750 / deviceWidth) * px
 	return Math.floor(rpx) + 'rpx'
 }
@@ -166,21 +169,6 @@ export const rpxToPx = (px : number) : number => {
 }
 
 /**
- * removeEmptyKeys 移除值为空的 key
- * @property {UTSJSONObject} obj 要操作的对象
- * @returns {UTSJSONObject} 返回处理后的对象
- */
-export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
-	let newData : UTSJSONObject = {};
-	for (let key in obj) {
-		if(obj[key] !== '' && obj[key] != null) {
-			newData[key] = obj[key]
-		}
-	}
-	return newData
-}
-
-/**
  * isExist 判断是否为空
  * @property {T} data 泛型 T ，根据传入类型自动推断
  * @returns boolean 返回布尔类型，true 就是不为空，false 就是为空
@@ -191,6 +179,21 @@ export function isExist<T>(data : T) : boolean {
 	// #endif
 	// #ifndef APP-ANDROID
 	let emptyArr = ['', null, 'null', undefined, 'undefined']
-	return emptyArr.includes(data)
+	return !emptyArr.includes(data)
 	// #endif
+}
+
+/**
+ * removeEmptyKeys 移除值为空的 key
+ * @property {UTSJSONObject} obj 要操作的对象
+ * @returns {UTSJSONObject} 返回处理后的对象
+ */
+export const removeEmptyKeys = (obj : UTSJSONObject) : UTSJSONObject => {
+	let newData : UTSJSONObject = {};
+	for (let key in obj) {
+		if(isExist(obj[key])) {
+			newData[key] = obj[key]
+		}
+	}
+	return newData
 }

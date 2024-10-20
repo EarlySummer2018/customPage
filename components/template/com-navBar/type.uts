@@ -1,5 +1,4 @@
 import { LinkItem } from "@/utils"
-
 export type BorderRadius = {
 	r1 : number,
 	r2 : number,

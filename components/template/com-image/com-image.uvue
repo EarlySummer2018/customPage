@@ -6,7 +6,7 @@
 			:mode="mode"
 			lazy-load
 			@error="handleError"
-			@load="handleLoad"></image>
+		></image>
 		<view class="com-image-error"
 			v-if="isError">
 			<text class="txt"
@@ -15,8 +15,6 @@
 				<slot></slot>
 			</template>
 		</view>
-		<view class="com-image-loading"
-			v-else-if="isLoading && showLoading"></view>
 	</view>
 </template>
 
@@ -76,16 +74,6 @@
 			width: 100%;
 			height: 100%;
 
-			&-loading {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(255, 255, 255);
-				animation: loading 1.5s linear infinite;
-			}
-
 			&-error {
 				position: absolute;
 				top: 0;
@@ -101,20 +89,6 @@
 					font-size: 16rpx;
 				}
 			}
-		}
-	}
-
-	@keyframes loading {
-		0% {
-			opacity: 0.5;
-		}
-
-		50% {
-			opacity: 0.3;
-		}
-
-		100% {
-			opacity: 0.5;
 		}
 	}
 </style>

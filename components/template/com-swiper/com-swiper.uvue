@@ -138,7 +138,7 @@
 	const setDotContainerStyle = () : UTSJSONObject => {
 		const { px, py, contentHeight } = modelStyle.value
 		const { size, mx, bottom, pb, justifyContent } = dotStyle.value
-		const windowWidth : number = uni.getSystemInfoSync().windowWidth
+		const windowWidth : number = getApp().globalData.screenWidth;
 		const width = `${parseInt(px2rpx(windowWidth), 10) - parseInt(px2rpx(px * 2), 10)}rpx`
 		if (modelOptions.value.vertical) {
 			const jc = {

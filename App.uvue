@@ -1,8 +1,12 @@
 <script lang="uts">
 	let firstBackTime = 0
 	export default {
+		globalData: {
+			screenWidth: 375
+		},
 		onLaunch: function () {
 			console.log('App Launch')
+			this.globalData.screenWidth = uni.getSystemInfoSync().screenWidth
 		},
 		onShow: function () {
 			console.log('App Show')

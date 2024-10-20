@@ -44,15 +44,12 @@
 	})
 	import { ModelContent, ModelStyle, ModelOptions, BorderRadius } from './type'
 	import { ContainerStyle } from '../type.uts'
-	import useModuleData from '@/components/template/hooks.uts'
-	const { cStyle } = useModuleData(props.modelData)
-	console.log('cStyle', cStyle);
-	// const cStyle = ref<ContainerStyle>({
-	// 	px: 0,
-	// 	py: 0,
-	// 	bgColor: 'transparent',
-	// 	bgImage: null
-	// })
+	const cStyle = ref<ContainerStyle>({
+		px: 0,
+		py: 0,
+		bgColor: 'transparent',
+		bgImage: null
+	})
 	const listContainer = ref<UniElement | null>(null)
 	const windowWidth : number = getApp().globalData.screenWidth;
 	/** 组件数据 */
@@ -112,12 +109,12 @@
 		modelContent.value = props.modelData['content'] as ModelContent[]
 		modelOptions.value = props.modelData['options'] as ModelOptions
 		modelStyle.value = props.modelData['style'] as ModelStyle
-		// cStyle.value = {
-		// 	px: modelStyle.value.px,
-		// 	py: modelStyle.value.py,
-		// 	bgColor: modelStyle.value.bgColor,
-		// 	bgImage: modelStyle.value.bgImage
-		// } as ContainerStyle
+		cStyle.value = {
+			px: modelStyle.value.px,
+			py: modelStyle.value.py,
+			bgColor: modelStyle.value.bgColor,
+			bgImage: modelStyle.value.bgImage
+		} as ContainerStyle
 	})
 </script>
 
