@@ -48,7 +48,9 @@
 								justifyContent:
 									curData.content.length === 3
 										? 'space-between'
-										: 'flex-start'
+										: 'flex-start',
+								paddingLeft: transformPixel(curData.style.card_pl),
+								paddingRight: transformPixel(curData.style.card_pr)
 							}"
 						>
 							<view
@@ -56,7 +58,8 @@
 								v-for="item in curData.content"
 								:key="item.id"
 								:style="{
-									width: itemWidth
+									paddingLeft: transformPixel(curData.style.card_pl),
+									paddingRight: transformPixel(curData.style.card_pr)
 								}"
 								@click="handleItem(item)"
 							>
@@ -66,8 +69,6 @@
 								>
 									<com-image
 										:src="item.main_image || ''"
-										:tr="curData.style.imgTR"
-										:br="curData.style.imgBR"
 										mode="aspectFill"
 									/>
 								</view>
@@ -125,6 +126,7 @@
 		},
 		methods: {
 			twoDecimals,
+			transformPixel,
 			handleItem(item) {
 				const link = {
 					type: 1,
@@ -137,18 +139,19 @@
 			},
 			setGoodsCoverSize() {
 				const len = this.curData.content.length
+				const { tr, tl, bl, br } = this.curData.style.imgRadius
 				if (len <= 3) {
-					this.itemWidth = transformPixel(104)
-					this.containerHeight = transformPixel(194)
+					this.itemWidth = transformPixel(105)
+					this.containerHeight = transformPixel(190)
 					this.scrollViewheight = transformPixel(214)
 					this.coverStyle = `width:${transformPixel(
-						104
-					)};height:${transformPixel(104)};`
+						105
+					)};height:${transformPixel(105)};border-radius:${transformPixel(tl)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(bl)};`
 				} else {
 					this.itemWidth = transformPixel(84)
 					this.coverStyle = `width:${transformPixel(
 						84
-					)};height:${transformPixel(84)};`
+					)};height:${transformPixel(84)};border-radius:${transformPixel(tl)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(bl)};`
 					this.containerHeight = transformPixel(174)
 					this.scrollViewheight = transformPixel(194)
 				}
@@ -201,9 +204,9 @@
 		&_body {
 			display: flex;
 			width: fit-content;
-			padding: r(20px);
+			padding: r(20px) 0;
 			&-item {
-				width: r(208px);
+				// width: r(208px);
 				margin-left: r(20px);
 				&:first-child {
 					margin-left: 0;
@@ -212,6 +215,7 @@
 					width: r(208px);
 					height: r(208px);
 					font-size: r(60px);
+					overflow: hidden;
 				}
 				&-goodsName {
 					font-size: r(26px);

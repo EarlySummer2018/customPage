@@ -1,0 +1,59 @@
+<template>
+	<view class="com-auto-render">
+		<template v-if="curData.moduleName === 'search'">
+			<com-search :curData="curData.data"></com-search>
+		</template>
+		<!-- <template v-else-if="curData.moduleName === 'swiper'">
+			<com-swiper :curData="curData.data"></com-swiper>
+		</template>
+		<template v-else-if="curData.moduleName === 'nav_bar'">
+			<com-navBar :curData="curData.data"></com-navBar>
+		</template>
+		<template v-else-if="curData.moduleName === 'message_swiper'">
+			<com-messageSwiper :curData="curData.data"></com-messageSwiper>
+		</template>
+		<template v-else-if="curData.moduleName === 'goods_group'">
+			<com-goodsGroup :curData="curData.data"></com-goodsGroup>
+		</template>
+		<template v-else-if="curData.moduleName === 'raster_slide'">
+			<com-rasterSlide :curData="curData.data"></com-rasterSlide>
+		</template>
+		<template v-else-if="curData.moduleName === 'multiline'">
+			<com-multiline :curData="curData.data"></com-multiline>
+		</template>
+		<template v-else-if="curData.moduleName === 'multi_image'">
+			<com-multiImage :curData="curData.data"></com-multiImage>
+		</template>
+		<template v-else-if="curData.moduleName === 'blanks'">
+			<com-blank :curData="curData.data"></com-blank>
+		</template>
+		<template v-else-if="curData.moduleName === 'polyline'">
+			<com-polyline :curData="curData.data"></com-polyline>
+		</template>
+		<template v-else-if="curData.moduleName === 'image_zone'">
+			<com-imageZone :curData="curData.data"></com-imageZone>
+		</template>
+		<template v-else-if="curData.moduleName === 'health'">
+			<com-health :curData="curData.data"></com-health>
+		</template> -->
+	</view>
+</template>
+
+<script>
+	export default {
+		name: 'ComAutoRender',
+		props: {
+			curData: {
+				type: Object,
+				default() {
+					return {}
+				}
+			}
+		},
+	}
+</script>
+<style lang="scss">
+	.com-auto-render {
+		position: relative;
+	}
+</style>

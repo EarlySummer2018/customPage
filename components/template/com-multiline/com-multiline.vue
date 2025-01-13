@@ -48,11 +48,9 @@
 						:key="item.id"
 						@click="handleItem(item)"
 					>
-						<view class="com-multiline_body-item-img">
+						<view class="com-multiline_body-item-img" :style="imgStyle">
 							<com-image
 								:src="item.cover || ''"
-								:tr="curData.style.imgTR"
-								:br="curData.style.imgBR"
 								mode="aspectFill"
 							/>
 						</view>
@@ -94,11 +92,13 @@
 		},
 		data() {
 			return {
-				list: []
+				list: [],
+				imgStyle: ''
 			}
 		},
 		mounted() {
 			const { content, other, options } = this.curData
+			this.setImgStyle();
 			if (options.source === 1 && other.parent_id && other.child_id) {
 				this.getList(other.parent_id, other.child_id, options.row)
 			} else {
@@ -149,18 +149,22 @@
 				ajaxData.content_cat_id = catId
 				ajaxData.cat_id = catSubId
 				that.emptyType = -1
-				that.$ajax({
-					url: '/api/content/',
-					isLoading: false,
-					ajaxData,
-					type: 'GET',
-					successFun(res) {
-						that.list = res.list.data.slice(0, len)
-					},
-					errorFun: function (error) {
-						uni.tools.alert.error(error.error_msg)
-					}
-				})
+				// that.$ajax({
+				// 	url: '/api/content/',
+				// 	isLoading: false,
+				// 	ajaxData,
+				// 	type: 'GET',
+				// 	successFun(res) {
+				// 		that.list = res.list.data.slice(0, len)
+				// 	},
+				// 	errorFun: function (error) {
+				// 		uni.tools.alert.error(error.error_msg)
+				// 	}
+				// })
+			},
+			setImgStyle() {
+				const { tr, tl, br, bl } = this.curData.style.imgRadius;
+				this.imgStyle = `border-radius:${transformPixel(tl)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(bl)};`
 			}
 		}
 	}
@@ -224,6 +228,7 @@
 					flex-shrink: 0;
 					margin-right: r(24px);
 					font-size: r(60px);
+					overflow: auto;
 				}
 
 				&-title {

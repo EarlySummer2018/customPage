@@ -2,57 +2,44 @@
 	<view class="com-navigator">
 		<view class="navigation-bar-placeholder" v-if="!isImmersive" :style="wrapperStyle"></view>
 		<view class="navigation-bar-wrapper" :style="wrapperStyle">
-			<view
-				class="navigation-bgImg"
-				:class="{
+			<view class="navigation-bgImg" :class="{
 					pageBg: !bgImg
-				}"
-				:style="{
+				}" :style="{
 					backgroundColor: backgroundColor,
 					backgroundImage:
 						bgImg || pageBg ? `url(${bgImg || pageBg})` : '',
 					opacity: showType === 2 ? opacity : '1'
-				}"
-			></view>
+				}"></view>
 			<view class="navigation-bar-inner" :style="innerStyle">
-				<view
-					class="navigation-bar-left"
-					:style="leftStyle"
-					@click="jumpHandler"
-					v-if="showLeft"
-				>
-					<template v-if="showBack">
+				<view class="navigation-bar-left" :style="leftStyle" @click="jumpHandler" v-if="showLeft && isMiniApp">
+					<block v-if="showBack">
 						<!-- <view class="navigation-bar-btn home" v-if="onlyOnePage">
 								首页
 							</view> -->
-						<view
-							:class="[
+						<view :class="[
 								'navigation-bar-btn',
 								'back',
 								`back-${iconStyle}`
-							]"
-						>
+							]">
 							<!-- 上一页 -->
 						</view>
-					</template>
-					<template v-else>
+					</block>
+					<block v-else>
 						<slot name="left"></slot>
-					</template>
+					</block>
 				</view>
-				<view
-					:class="[
-						'navigation-bar-center',
-						ellipsis && 'ellipsis-dot'
-					]"
-				>
-					<template v-if="!!title">
-						<text>{{ title }}</text>
-					</template>
-					<template v-else>
+				<view class="navigation-bar-center">
+					<view :style="{
+							height: title.length > 0 ? titleHeight : 'auto',
+							color: color
+						}" :class="{'navigation-bar-title': title.length > 0}" v-if="title.length > 0">
+						<text :class="[ellipsis ? 'ellipsis-dot' : '']">{{ title }}</text>
+					</view>
+					<block v-else>
 						<view class="menu-botton-left" :style="menuButton">
 							<slot></slot>
 						</view>
-					</template>
+					</block>
 				</view>
 				<view class="navigation-bar-right">
 					<slot name="right"></slot>
@@ -61,84 +48,107 @@
 		</view>
 	</view>
 </template>
+
 <script lang="uts" setup>
+	/**
+	 * navigation 自定义顶部导航。
+	 * @description 自定义顶部导航。
+	 * @property {String}	title	导航标题，默认为空，不为空就显示标题，为空就显示默认插槽	`<slot></slot>`。
+	 * @property {String}	color	标题颜色，默认：#000000。
+	 * @property {String}	backgroundColor	导航背景色，默认：transparent。
+	 * @property {Boolean}	showBack	是否显示返回按钮，默认：true，为 true 时，有上一页则显示返回图标，否则显示首页图标。为 false 时，显示具名插槽 `<slot name="left"></slot>`
+	 * @property {Boolean}	iconStyle	图标颜色，默认：white，可选 white/black。
+	 * @property {Boolean}	ellipsis	标题超出是否显示省略号，默认：true，建议超出显示省略号。
+	 * @property {Boolean}	isFixed		导航栏是否固定定位在顶部，默认：true。
+	 */
 	const props = defineProps({
-			title: {
-				type: String,
-				default: ''
-			},
-			color: {
-				type: String,
-				default: '#000000'
-			},
-			backgroundColor: {
-				type: String,
-				default: 'transparent'
-			},
-			bgImg: {
-				type: String,
-				default: ''
-			},
-			showBack: {
-				type: Boolean,
-				default: true
-			},
-			iconStyle: {
-				type: String,
-				default: 'white'
-			},
-			ellipsis: {
-				type: Boolean,
-				default: true
-			},
-			isFixed: {
-				type: Boolean,
-				default: true
-			},
-			showLeft: {
-				type: Boolean,
-				default: false
-			},
-			showType: {
-				type: [Number, String],
-				default: ''
-			},
-			pageBg: {
-				type: String,
-				default: ''
-			},
-			isImmersive: {
-				type: Boolean,
-				default: true
-			},
-			canClickIcon: {
-				type: Boolean,
-				default: true
-			}
-		})
+		title: {
+			type: String,
+			default: ''
+		},
+		color: {
+			type: String,
+			default: '#000000'
+		},
+		backgroundColor: {
+			type: String,
+			default: 'transparent'
+		},
+		bgImg: {
+			type: String,
+			default: ''
+		},
+		showBack: {
+			type: Boolean,
+			default: true
+		},
+		iconStyle: {
+			type: String,
+			default: 'white'
+		},
+		ellipsis: {
+			type: Boolean,
+			default: true
+		},
+		isFixed: {
+			type: Boolean,
+			default: true
+		},
+		showLeft: {
+			type: Boolean,
+			default: false
+		},
+		showType: {
+			type: [Number, String],
+			default: ''
+		},
+		pageBg: {
+			type: String,
+			default: ''
+		},
+		isImmersive: {
+			type: Boolean,
+			default: true
+		},
+		canClickIcon: {
+			type: Boolean,
+			default: true
+		},
+		alignItems: {
+			type: String,
+			default: 'center'
+		}
+	})
+	const { globalData } = getApp()
 	const onlyOnePage = ref<boolean>(false)
 	const wrapperStyle = ref<string>('')
 	const innerStyle = ref<string>('')
 	const leftStyle = ref<string>('')
-	const systemInfo = ref<GetSystemInfoResult | null>(null)
+	const systemInfo = ref<GetSystemInfoResult>({})
 	const opacity = ref<number>(0)
 	const menuButton = ref<string>('')
-	const styleHandler = () : void => {
-		// #ifdef MP
-		let isSupport = !!uni.getMenuButtonBoundingClientRect
-		// #endif
-		// #ifdef APP
+	const isMiniApp = ref<boolean>(true)
+	const titleHeight = ref<string>('')
+	// 样式设计
+	const styleHandler = () => {
 		let isSupport = false
+		// #ifdef MP
+		isSupport = !!uni.getMenuButtonBoundingClientRect
 		// #endif
 		const rect = getApp().globalData.rect
-		const { statusBarHeight, windowWidth, osName } = systemInfo.value as GetSystemInfoResult // 手机状态栏高度
-		let wrapperStyleArr : string[] = [] // 整体样式
-		let innerStyleArr : string[] = [] // 整体样式
-		let leftStyleArr : string[] = [] // 左边按钮区域样式
+		const { statusBarHeight, windowWidth, platform } = systemInfo.value // 手机状态栏高度
+		let wrapperStyleArr = [] // 整体样式
+		let innerStyleArr = [] // 整体样式
+		let leftStyleArr = [] // 左边按钮区域样式
+		// #ifdef MP-WEIXIN
+		innerStyleArr.push(`padding-top:${rect.top}px`) // 上边距
+		// #endif
+		// #ifndef MP-WEIXIN
 		innerStyleArr.push(`padding-top:${statusBarHeight}px`) // 上边距
+		// #endif
 		innerStyleArr.push(`color:${props.color}`) // 字体颜色
 		// #ifdef MP-WEIXIN
-		if (osName === 'windows') {
+		if (platform === 'windows') {
 			const { top } = uni.getMenuButtonBoundingClientRect()
 			innerStyleArr.push(`height: ${top - statusBarHeight + 44}px`) // 高度
 			wrapperStyleArr.push(`height: ${top - statusBarHeight + 44}px`) // 高度
@@ -155,7 +165,7 @@
 			wrapperStyleArr.push('position: relative')
 		}
 		if (isSupport && rect) {
-			if(osName !== 'windows') {
+			if(platform !== 'windows') {
 				innerStyleArr.push(
 					`padding-right:${windowWidth - rect.left}px`
 				) // 右边距
@@ -163,9 +173,7 @@
 			leftStyleArr.push(`width:${windowWidth - rect.left}px`) // 左边返回区域宽度
 		}
 		// #ifndef APP
-		menuButton.value = `height:${rect.height}px;margin-top:${
-			rect.top - statusBarHeight
-		}px;`
+		menuButton.value = `height:${rect.height}px;`
 		// #endif
 		// #ifdef APP
 		menuButton.value = `height:${rect.height}px;`
@@ -175,7 +183,7 @@
 		leftStyle.value = leftStyleArr.join(';')
 	}
 	// 页面跳转
-	const jumpHandler = () : void => {
+	const jumpHandler = () => {
 		if (!props.canClickIcon) return;
 		if (onlyOnePage.value) {
 			uni.reLaunch({
@@ -187,8 +195,11 @@
 			})
 		}
 	}
+	// watch(() => $store.state.opacity,()=>{
+	// 	opacity.value = Number(nVal).toFixed(1)
+	// })
 	onMounted(()=>{
-		systemInfo.value = uni.getSystemInfoSync()
+		systemInfo.value = globalData.systemInfo
 		onlyOnePage.value = getCurrentPages().length === 1
 		styleHandler()
 	})
@@ -209,6 +220,7 @@
 			left: 0;
 			z-index: 520;
 		}
+
 		.navigation-bgImg {
 			position: absolute;
 			width: 100%;
@@ -217,18 +229,20 @@
 			background-size: cover;
 			background-repeat: no-repeat;
 			background-position: 50% center;
+
 			&.pageBg {
 				background-size: 100% auto;
 				background-position: 0 0;
 			}
 		}
+
 		.navigation-bar-top {
 			position: absolute;
 			top: 0;
 			right: 0;
 			left: 0;
 			width: 100vw;
-			height: r(88px); // 动态配置
+			height: 88rpx; // 动态配置
 			// background-color: #ffffff;
 			z-index: 2;
 		}
@@ -237,10 +251,10 @@
 			position: relative;
 			box-sizing: border-box;
 			display: flex;
-			align-items: center;
+			// align-items: center;
 			width: 100vw;
-			height: r(128px);
-			padding-top: r(88px); // 动态配置
+			height: 128rpx;
+			padding-top: 88rpx; // 动态配置
 			z-index: 2;
 		}
 
@@ -248,17 +262,17 @@
 			box-sizing: border-box;
 			display: flex;
 			align-items: center;
-			width: r(194px); // 动态配置
-			height: r(88px);
-			padding-left: r(32px);
+			width: 194rpx; // 动态配置
+			height: 88rpx;
+			padding-left: 32rpx;
 		}
 
 		.navigation-bar-btn {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: r(36px);
-			height: r(36px);
+			width: 36rpx;
+			height: 36rpx;
 			background: transparent;
 			background-size: 100% 100%;
 
@@ -272,6 +286,7 @@
 				margin-left: vw(-30);
 				background-image: url(bg('images/selmac/arrow-left.png'));
 			}
+
 			&.back-black {
 				background-image: url(bg('images/selmac/arrow-left-black.png'));
 			}
@@ -280,13 +295,19 @@
 		.navigation-bar-center {
 			display: flex;
 			flex: 1;
-			justify-content: center;
 			overflow: hidden;
-			font-size: r(34px);
-			font-weight: normal;
+			font-size: 34rpx;
+			color: #333;
+			font-weight: bold;
 			text-align: center;
 
-			&.ellipsis-dot {
+			.navigation-bar-title {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.ellipsis-dot {
 				display: -webkit-box;
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -294,6 +315,11 @@
 				/*! autoprefixer: off */
 				-webkit-box-orient: vertical;
 				word-break: break-all;
+			}
+
+			.menu-botton-left {
+				width: 100%;
+				height: 100%;
 			}
 		}
 	}

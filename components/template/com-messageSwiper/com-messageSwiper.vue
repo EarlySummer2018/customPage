@@ -4,7 +4,7 @@
 			<view class="com-messageSwiper_warp" :style="warpStyle">
 				<view
 					class="com-messageSwiper_icon"
-					v-if="curData.options.position === 'left'"
+					v-if="curData.options.isShowIcon && curData.options.position === 'left'"
 					@click="jumpLink(curData.content.link)"
 					style="margin-right: 10rpx"
 				>
@@ -12,8 +12,6 @@
 						:src="curData.content.img.url || ''"
 						mode="heightFix"
 						curStyle="height: 100%"
-						:tr="curData.style.imgTR"
-						:br="curData.style.imgBR"
 					></com-image>
 				</view>
 				<swiper
@@ -42,7 +40,7 @@
 				</swiper>
 				<view
 					class="com-messageSwiper_icon"
-					v-if="curData.options.position === 'right'"
+					v-if="curData.options.isShowIcon && curData.options.position === 'right'"
 					@click="jumpLink(curData.content.link)"
 					style="margin-left: 10rpx"
 				>
@@ -50,8 +48,6 @@
 						:src="curData.content.img.url || ''"
 						mode="heightFix"
 						curStyle="height: 100%"
-						:tr="curData.style.imgTR"
-						:br="curData.style.imgBR"
 					></com-image>
 				</view>
 			</view>
@@ -108,7 +104,9 @@
 						page: 1
 					}
 				let Url = ''
-				if (that.curData.options.source === 2) {
+				if (that.curData.options.source === 1) {
+					url = '/api/query-message-swiper'
+				} else if (that.curData.options.source === 2) {
 					Url = '/api/shop/log/messages'
 				} else if (that.curData.options.source === 3) {
 					Url = '/api/system/notices'
@@ -117,20 +115,20 @@
 					that.list.push({ title: '暂无消息' })
 					return
 				}
-				that.$ajax({
-					url: Url,
-					ajaxData: ajaxData,
-					type: 'GET',
-					successFun(res) {
-						that.list = res.list.data
-						if (!res.list.data.length) {
-							that.list = [{ title: '暂无消息' }]
-						}
-					},
-					errorFun: function (error) {
-						uni.tools.alert.error(error.error_msg)
-					}
-				})
+				// that.$ajax({
+				// 	url: Url,
+				// 	ajaxData: ajaxData,
+				// 	type: 'GET',
+				// 	successFun(res) {
+				// 		that.list = res.list.data
+				// 		if (!res.list.data.length) {
+				// 			that.list = [{ title: '暂无消息' }]
+				// 		}
+				// 	},
+				// 	errorFun: function (error) {
+				// 		uni.tools.alert.error(error.error_msg)
+				// 	}
+				// })
 			}
 		}
 	}

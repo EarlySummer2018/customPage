@@ -36,8 +36,8 @@
 									'detail-cover': curData.options.row === -1,
 								}"
 							>
-								<view class="goods-cover-img">
-									<com-image :src="item.main_image || ''" :tr="curData.style.imgTR" :br="curData.style.imgBR" mode="aspectFill" />
+								<view class="goods-cover-img" :style="imgStyle">
+									<com-image :src="item.main_image || ''" mode="aspectFill" />
 								</view>
 							</view>
 							<view
@@ -75,9 +75,8 @@
 										<com-image
 											v-if="curData.options"
 											:src="curData.options.btnImg.url || ''"
-											:tr="curData.style.imgTR"
-											:br="curData.style.imgBR"
 											backgroundColor="transparent"
+											mode="heightFix"
 										/>
 									</view>
 								</view>
@@ -87,18 +86,13 @@
 				</view>
 			</com-container-style>
 		</com-component-style>
-		<middleSku ref="area" v-if="showSku" :isShow.sync="showSku" :goodsData="goods" :param="skuParam" :isShowAdd="isShowAdd"></middleSku>
 	</view>
 </template>
 
 <script>
-import middleSku from '@/components/sku/middle_sku.vue';
 import { transformPixel, twoDecimals, jumpLink } from '../utils.js';
 export default {
 	name: 'comGoodsGroup',
-	components: {
-		middleSku,
-	},
 	props: {
 		curData: {
 			type: Object,
@@ -109,6 +103,7 @@ export default {
 	},
 	data() {
 		return {
+			imgStyle: '',
 			listStyle: '',
 			goodsStyle: '',
 			bodyStyle: '',
@@ -207,6 +202,8 @@ export default {
 		setGoodsStyle() {
 			const { row } = this.curData.options;
 			this.goodsStyle = `padding: ${row <= 1 ? `${transformPixel(8)} ${transformPixel(10)}` : ''};flex: ${row === -1 && 1};`;
+			const { tr, tl, br, bl } = this.curData.style.imgRadius;
+			this.imgStyle = `border-radius:${transformPixel(tl)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(bl)};`
 		},
 		setBodyStyle() {
 			const { row } = this.curData.options;
@@ -297,6 +294,7 @@ export default {
 						left: 0;
 						width: 100%;
 						height: 100%;
+						overflow: hidden;
 					}
 				}
 				.goodsInfo {
@@ -339,7 +337,7 @@ export default {
 						margin-top: r(20px);
 					}
 					&-btnImg {
-						width: r(36px);
+						width: r(38px);
 						height: r(36px);
 					}
 				}

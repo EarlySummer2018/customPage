@@ -1,0 +1,123 @@
+import { LinkForm } from "./type";
+
+/**
+ * imgPathSplice
+ * @param {Object} imgItem 图片对象
+ * @returns 返回拼接了 oss 路径的完整路径
+ */
+export const imgPathSplice = (imgItem : any) :string => {
+	if (typeof imgItem === 'string') return 'oss' + imgItem
+	return 'oss' + imgItem.src
+}
+
+export const twoDecimals = (money : number) : string => {
+	return money ? (money / 100).toFixed(2) : '0';
+}
+
+export const colorToRgba = (color : string.ColorString, alpha : number = 1) : string.ColorString => {
+	if (!color) return color;
+	// 十六进制颜色值的正则表达式
+	const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+	/* 16进制颜色转为RGB格式 */
+	let sColor = String(color).toLowerCase();
+	if (sColor && reg.test(sColor)) {
+		if (sColor.length === 4) {
+			let sColorNew = '#';
+			for (let i = 1; i < 4; i += 1) {
+				sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+			}
+			sColor = sColorNew;
+		}
+		// 处理六位的颜色值
+		const sColorChange = [];
+		for (let i = 1; i < 7; i += 2) {
+			sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+		}
+		// return sColorChange.join(',')
+		return `rgba(${sColorChange.join(',')},${alpha})`;
+	}
+
+	return sColor;
+}
+
+/**
+ * transformPixel 使用 `uni.rpx2px` 进行像素转换
+ * @param { Number } px 需要转换的像素
+ * @param { String } rType 需要返回的类型，number：返回转换后的像素，string：返回转换后带 px 单位，默认：string
+ * @returns px -> rpx
+ */
+export const transformPixel = (px : number, rType : string = 'string') : string => {
+	if (typeof px !== 'number') return '';
+	const num = px * 2
+	if (!num) return rType === 'number' ? 0 : '0px'
+	else if (rType === 'number') return uni.rpx2px(num)
+	else return uni.rpx2px(num) + 'px'
+}
+
+/**
+ * jumpLink 链接跳转
+ * @param { Object } linkItem 链接对象
+ */
+export const jumpLink = (linkItem : LinkForm) => {
+	console.log('跳转参数：', linkItem);
+	const {
+		type,
+		path,
+		isLogin,
+		isReplace,
+		form,
+		navIndex
+	} = linkItem;
+	if (type === 99) {
+		uni.$emit('changeTabbar', navIndex)
+		return
+	}
+	if (type === 'back') {
+		uni.navigateBack({
+			delta: 1,
+			fail(err) {
+				uni.reLaunch({
+					url: '/pages/index/index',
+					fail(err) {
+						console.log(err);
+					}
+				})
+			}
+		})
+		return
+	}
+	let url = path,
+		query = []
+	if (type === 'custom') {
+		url = form[0].value
+	} else if (type === 'outer') {
+		url = `/pages/webview/webview?url=${encodeURIComponent(form[0].value)}`
+	} else if (form && form.length) {
+		form.forEach(el => {
+			query.push(`${el.key}=${el.value}`)
+		})
+	}
+	if (query && query.length) url = `${url}?${query.join('&')}`
+	if (url && url[0] !== '/') {
+		url = '/' + url
+	}
+	if(isLogin) {
+		console.log('登录校验');
+		return
+	}
+	if(isReplace) {
+		uni.redirectTo({
+			url,
+			fail(err) {
+				console.log(err);
+			}
+		})
+	}else{
+		uni.navigateTo({
+			url,
+			fail(err) {
+				console.log(err);
+			}
+		})
+	}
+}

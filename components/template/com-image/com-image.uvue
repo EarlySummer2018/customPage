@@ -1,94 +1,188 @@
 <template>
-	<view class="com-image_warp">
-		<image
-			class="com-image"
-			:src="src"
-			:mode="mode"
-			lazy-load
-			@error="handleError"
-		></image>
-		<view class="com-image-error"
-			v-if="isError">
-			<text class="txt"
-				v-if="showErrMsg">{{ errMsg }}</text>
-			<template v-else>
-				<slot></slot>
-			</template>
+	<view
+		class="com-image"
+		@click="onClick"
+		:style="{
+			mihHeight: minHeight ? transformPixel(minHeight) : 'auto',
+			backgroundColor: !src ? bgColor : 'none',
+			borderRadius: `${transformPixel(tr)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(br)}`
+		}"
+	>
+		<view
+			class="com-image_loading"
+			v-if="src && !isShow && skeleton"
+		></view>
+		<template v-if="!isError && src">
+			<view
+				class="com-image_img"
+				:style="{
+					opacity: isShow ? '1' : '0',
+					transitionDelay: transitionDelay + 's'
+				}"
+			>
+				<image
+					:src="src"
+					:style="imgStyle"
+					:mode="mode"
+					@load="onLoadImage"
+					@error="onErrorImage"
+					lazy-load
+				></image>
+			</view>
+		</template>
+		<view
+			class="com-image_error"
+			:style="{
+				zIndex: isError || !src ? '1' : '-1'
+			}"
+			v-show="isError || !src"
+		>
+			<uni-icons type="image" color="#929292" :size="size"></uni-icons>
 		</view>
 	</view>
 </template>
-
 <script lang="uts" setup>
+	import { onMounted, ref } from 'vue';
+	import { imgPathSplice, transformPixel } from '../utils.js';
 	/**
-	 * @property {String} src 图片路径
-	 * @property {String} mode 图片渲染模式
-	 * @property {Boolean} showLoading 是否显示加载中
-	 * @property {Boolean} showErrMsg 是否显示错误信息
+	 * ComImage 图片组件
+	 * @description com-iamge 图片组件
+	 * @property { String } src 图片路径
+	 * @property { String } mode 图片裁剪模式，和 uniapp 一致
+	 * @property { String } errImg 图片加载失败时，显示的图片路径
+	 * @property { Number } tr 图片上圆角
+	 * @property { Number } br 图片下圆角
+	 * @property { Number } minHeight 图片最小高度，默认：auto
+	 * @property { String } bgColor	背景颜色，默认: #eeeeee
+	 * @property { Boolean } skeleton 是否显示图片加载骨架
+	 * @property { Boolean } transition 图片加载完成显示是否使用过渡效果
+	 * @property { String | Number } transitionDelay 过渡效果时间，单位秒，默认：0.2
+	 * @event {Function} click 点击事件
 	 */
-	defineProps({
+	const props = defineProps({
 		src: {
 			type: String,
-			required: true,
 			default: ''
 		},
 		mode: {
 			type: String,
-			default: 'scaleToFill'
+			default: 'widthFix'
 		},
-		showLoading: {
-			type: Boolean,
-			default: true,
+		bgColor: {
+			type: String,
+			default: '#eeeeee'
 		},
-		showErrMsg: {
+		skeleton: {
 			type: Boolean,
-			default: true,
+			default: true
+		},
+		transitionDelay: {
+			type: [Number, String],
+			default: 0.2
+		},
+		size: {
+			type: String,
+			default: '30'
+		},
+		curStyle: {
+			type: String,
+			default: ''
+		},
+		tr: {
+			type: [Number, String],
+			default: 0
+		},
+		br: {
+			type: [Number, String],
+			default: 0
+		},
+		minHeight: {
+			type: String,
+			default: ''
 		}
 	})
-	const isLoading = ref<boolean>(true)
+	const $emit = defineEmits(['click'])
+	const isShow = ref<boolean>(false)
 	const isError = ref<boolean>(false)
-	const errMsg = ref<string>('')
-	const isSuccess = ref<boolean>(false)
-	const handleError = (error : UniImageErrorEvent) : void => {
-		isError.value = true
-		isSuccess.value = false
-		isLoading.value = false
-		errMsg.value = error.detail.errMsg
-		console.error(`Image loading failed：${errMsg.value}`)
+	const imgStyle = ref<string>('')
+	const onClick = () => {
+		$emit('click')
 	}
-	const handleLoad = () : void => {
-		isError.value = false
-		isSuccess.value = true
-		isLoading.value = false
+	const setImageStyle = () => {
+		if(props.curStyle) {
+			imgStyle.value = props.curStyle
+		}
+		if (props.mode === 'widthFix') {
+			imgStyle.value = 'width: 100%;height:auto;'
+		} else if (props.mode === 'heightFix') {
+			imgStyle.value = 'height: 100%'
+		} else {
+			imgStyle.value = 'width:100%;height:100%;'
+		}
 	}
+	const onLoadImage = () => {
+		isShow.value = true
+	}
+	const onErrorImage = () => {
+		isShow.value = true
+		isShow.value = true
+	}
+	onMounted(()=>{
+		setImageStyle();
+	})
 </script>
 
-<style lang="scss">
-	.com-image_warp {
+<style lang="scss" scoped>
+	.com-image {
 		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		width: 100%;
 		height: 100%;
-		background-color: #ebe8e8;
-
-		.com-image {
+		overflow: hidden;
+		z-index: 2;
+		&_loading {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				-45deg,
+				#f1f2f4 25%,
+				#e6e6e6 37%,
+				#f1f2f4 50%
+			);
+			background-size: 400% 100%;
+			animation: skeleton 1.8s ease infinite;
+			z-index: 2;
+		}
+		&_img {
 			position: relative;
 			width: 100%;
 			height: 100%;
-
-			&-error {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				.txt {
-					color: red;
-					font-size: 16rpx;
-				}
-			}
+			opacity: 0;
+			transition: opacity 0.2s linear;
+			z-index: 2;
+		}
+		&_error {
+			position: relative;
+			z-index: -1;
+		}
+	}
+	@keyframes skeleton {
+		0% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0 50%;
+		}
+	}
+	@keyframes showErrorIcon {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
 		}
 	}
 </style>

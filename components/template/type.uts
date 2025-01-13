@@ -1,6 +1,13 @@
-export type ContainerStyle = {
-	bgColor : string.ColorString,
-	bgImage : string.ImageURIString | null,
-	px : number,
-	py : number,
+export type Image = {
+	url: string,
+	id?: number
+}
+export type LinkForm = {
+	required: boolean,
+	value: string,
+	label: string,
+	key: string,
+	type: string,
+	select_type: string,
+	info: any
 }

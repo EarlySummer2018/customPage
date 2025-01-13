@@ -2,11 +2,15 @@
 	let firstBackTime = 0
 	export default {
 		globalData: {
-			screenWidth: 375
+			systemInfo: {},
+			rect: {}
 		},
 		onLaunch: function () {
 			console.log('App Launch')
-			this.globalData.screenWidth = uni.getSystemInfoSync().screenWidth
+			this.globalData.systemInfo = uni.getSystemInfoSync()
+			// #ifdef MP-WEIXIN
+			this.globalData.rect = uni.getMenuButtonBoundingClientRect()
+			// #endif
 		},
 		onShow: function () {
 			console.log('App Show')
@@ -38,7 +42,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/*每个页面公共css */
 	.uni-row {
 		flex-direction: row;
@@ -47,4 +51,5 @@
 	.uni-column {
 		flex-direction: column;
 	}
+	
 </style>

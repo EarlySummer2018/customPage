@@ -1,6 +1,6 @@
 {
-    "name" : "customPage",
-    "appid" : "__UNI__901154B",
+    "name" : "ux-home-template",
+    "appid" : "__UNI__BA58878",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -9,9 +9,12 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx15355e7415a55082",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "es6" : true,
+            "minified" : true,
+            "postcss" : true
         },
         "usingComponents" : true
     },

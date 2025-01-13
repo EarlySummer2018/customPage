@@ -12,8 +12,6 @@
 		></button>
 		<com-image
 			:src="curData.options.icon.url || ''"
-			:tr="curData.style.imgTR"
-			:br="curData.style.imgBR"
 		></com-image>
 	</view>
 </template>

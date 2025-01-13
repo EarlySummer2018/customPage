@@ -1,6 +1,5 @@
 {
 	"easycom": {
-		"autoscan": true,
 		"custom": {
 			"^com-(.*)": "@/components/template/com-$1/com-$1.uvue"
 		}
@@ -10,17 +9,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "uni-app x",
-				"app-plus": {
-					"bounce": "none"
-				},
-				"disableScroll" : true
-			}
-		},
-		{
-			"path" : "pages/login/login",
-			"style" : 
-			{
-				"navigationBarTitleText" : "登录"
+				"navigationStyle": "custom"
 			}
 		}
 	],

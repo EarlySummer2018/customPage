@@ -2,54 +2,113 @@
 	<view class="com-multiImage">
 		<com-component-style :curStyle="curData.style || null">
 			<com-container-style :curStyle="curData.style || null">
-				<view class="com-multiImage_content" :style="contentStyle">
-					<view class="com-multiImage_header" :style="headerStyle" v-if="curData.options.mainHeading">
-						<view class="com-multiImage_header-main" :style="{
+				<view
+					class="com-multiImage_content"
+					:style="contentStyle"
+				>
+					<view
+						class="com-multiImage_header"
+						:style="headerStyle"
+						v-if="curData.options.mainHeading"
+					>
+						<view
+							class="com-multiImage_header-main"
+							:style="{
 								color: curData.style.mainColor,
 								fontSize: transformPixel(curData.style.mfs)
-							}">
+							}"
+						>
 							<text class="com-multiImage_header-title">
 								{{ curData.options.mainHeading }}
 							</text>
 						</view>
-						<view class="com-multiImage_header-sub" :style="{
+						<view
+							class="com-multiImage_header-sub"
+							:style="{
 								color: curData.style.subColor,
 								fontSize: transformPixel(curData.style.sfs)
-							}">
+							}"
+						>
 							<text class="com-multiImage_header-title">
 								{{ curData.options.subHeading }}
 							</text>
 						</view>
 					</view>
-					<view class="com-multiImage_warp" :style="warpStyle" v-if="curData.options.row !== -1">
-						<view class="com-multiImage_warp-img" :style="imgStyle" v-for="item in curData.content"
-							:key="item.key" @click="jumpLink(item.link)">
-							<com-image curStyle="vertical-align:bottom;" :src="item.img.url || ''" :minHeight="130"
-								:tr="curData.style.imgTR" :br="curData.style.imgBR" mode="widthFix"></com-image>
+					<view
+						class="com-multiImage_warp"
+						:style="warpStyle"
+						v-if="curData.options.row !== -1"
+					>
+						<view
+							class="com-multiImage_warp-img"
+							:style="imgStyle"
+							v-for="item in curData.content"
+							:key="item.key"
+							@click="jumpLink(item.link)"
+						>
+							<com-image
+								curStyle="vertical-align:bottom;"
+								:imgRadius="imgRadius"
+								:src="item.img.url || ''"
+								:minHeight="130"
+								mode="widthFix"
+							></com-image>
 						</view>
 					</view>
 					<view class="com-multiImage_window" v-else>
-						<view class="com-multiImage_window-left" v-if="curData.content[0]" @click="jumpLink(curData.content[0].link)">
-							<com-image curStyle="vertical-align:bottom;" :src="curData.content[0].img.url || ''"
-								:tr="curData.style.imgTR" :br="curData.style.imgBR" :minHeight="130"
-								mode="aspectFill"></com-image>
+						<view
+							class="com-multiImage_window-left"
+							v-if="curData.content[0]"
+							@click="jumpLink(curData.content[0].link)"
+						>
+							<com-image
+								curStyle="vertical-align:bottom;"
+								:imgRadius="imgRadius"
+								:src="curData.content[0].img.url || ''"
+								:minHeight="130"
+								mode="aspectFill"
+							></com-image>
 						</view>
 						<view class="com-multiImage_window-right">
-							<view class="com-multiImage_window-right-top" v-if="curData.content[1]" @click="jumpLink(curData.content[1].link)">
-								<com-image curStyle="vertical-align:bottom;" :src="curData.content[1].img.url || ''"
-									:tr="curData.style.imgTR" :br="curData.style.imgBR" :minHeight="130"
-									mode="aspectFill"></com-image>
+							<view
+								class="com-multiImage_window-right-top"
+								v-if="curData.content[1]"
+								@click="jumpLink(curData.content[1].link)"
+							>
+								<com-image
+									curStyle="vertical-align:bottom;"
+									:imgRadius="imgRadius"
+									:src="curData.content[1].img.url || ''"
+									:minHeight="130"
+									mode="aspectFill"
+								></com-image>
 							</view>
 							<view class="com-multiImage_window-right-bottom">
-								<view class="com-multiImage_window-right-bottom-left" v-if="curData.content[2]" @click="jumpLink(curData.content[2].link)">
-									<com-image curStyle="vertical-align:bottom;" :src="curData.content[2].img.url || ''"
-										:tr="curData.style.imgTR" :br="curData.style.imgBR" :minHeight="130"
-										mode="aspectFill"></com-image>
+								<view
+									class="com-multiImage_window-right-bottom-left"
+									v-if="curData.content[2]"
+									@click="jumpLink(curData.content[2].link)"
+								>
+									<com-image
+										curStyle="vertical-align:bottom;"
+										:imgRadius="imgRadius"
+										:src="curData.content[2].img.url || ''"
+										:minHeight="130"
+										mode="aspectFill"
+									></com-image>
 								</view>
-								<view class="com-multiImage_window-right-bottom-right" v-if="curData.content[3]" @click="jumpLink(curData.content[3].link)">
-									<com-image curStyle="vertical-align:bottom;" :src="curData.content[3].img.url || ''"
-										:tr="curData.style.imgTR" :br="curData.style.imgBR" :minHeight="130"
-										mode="aspectFill"></com-image>
+								<view
+									class="com-multiImage_window-right-bottom-right"
+									v-if="curData.content[3]"
+									@click="jumpLink(curData.content[3].link)"
+								>
+									<com-image
+										curStyle="vertical-align:bottom;"
+										:imgRadius="imgRadius"
+										:src="curData.content[3].img.url || ''"
+										:minHeight="130"
+										mode="aspectFill"
+									></com-image>
 								</view>
 							</view>
 						</view>
@@ -79,6 +138,7 @@
 			return {
 				warpStyle: '',
 				imgStyle: '',
+				imgRadius: '',
 				headerStyle: '',
 				contentStyle: ''
 			}
@@ -101,29 +161,30 @@
 			},
 			setImgStyle() {
 				const {
-					imgPy,
-					imgPx
+					imgPadding,
+					imgRadius
 				} = this.curData.style
-				this.imgStyle = `padding: ${transformPixel(
-					imgPy
-				)} ${transformPixel(imgPx)};`
+				const { pt, pr, pb, pl } = imgPadding
+				const { tr, tl, br, bl } = imgRadius
+				this.imgStyle = `padding: ${transformPixel(pt)} ${transformPixel(pr)} ${transformPixel(pb)} ${transformPixel(pl)};`
+				this.imgRadius = `${transformPixel(tl)} ${transformPixel(tr)} ${transformPixel(br)} ${transformPixel(bl)}`
 			},
 			setContentStyle() {
 				const {
-					contentPx,
-					contentPy
+					contentPadding
 				} = this.curData.style
+				const { pt, pl, pr } = contentPadding;
 				const {
 					mainHeading
 				} = this.curData.options
 				this.headerStyle = `top: -${transformPixel(
-					contentPy
+					pt
 				)};left: -${transformPixel(
-					contentPx
-				)};width: calc(100% + ${transformPixel(contentPx * 2)});`
-				const pt = Math.abs(40 - contentPy)
+					pl
+				)};width: calc(100% + ${transformPixel(pl)} + ${transformPixel(pr)});`
+				const cpt = Math.abs(40 - pt)
 				this.contentStyle = `padding-top:${
-					mainHeading ? transformPixel(pt) : '0px'
+					mainHeading ? transformPixel(cpt) : '0px'
 				};`
 			}
 		}

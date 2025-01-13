@@ -1,0 +1,23 @@
+import { Image, LinkForm } from '../type.uts'
+export type FooterContent = {
+	key: string,
+	text: string,
+	icon: Image,
+	link: LinkForm,
+	activeIcon: Image,
+	color: string.ColorString,
+	fontSize: number,
+	activeColor: string.ColorString
+}
+export type FooterStyle = {
+	bgColor : string.ColorString
+}
+export type FooterOptions = {
+	bgImg : Image
+}
+
+export type Footer = {
+	content : FooterContent[],
+	style : FooterStyle,
+	options : FooterOptions
+}

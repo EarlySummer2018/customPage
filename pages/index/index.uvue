@@ -1,21 +1,256 @@
 <template>
-	<scroll-view style="flex: 1; background-color: #f8f8f8" :bounces="false">
-		<com-swiper :modelData="swiperModelData"></com-swiper>
-		<com-search :modelData="searchModelData"></com-search>
-		<com-navBar :modelData="navBarData"></com-navBar>
-		<com-blank :moduleData="blankData"></com-blank>
-		<com-polyline :moduleData="polylineData"></com-polyline>
-		<com-imageZone :moduleData="zoneData"></com-imageZone>
-		<com-footer :moduleData="footerData"></com-footer>
+	<scroll-view class="index-template-scroll" :class="{
+			loading: !isShowPage
+		}" scroll-y :scrollTop="scrollTop" :bounces="false" enhanced @scroll="onScroll" scroll-with-animation :style="{
+			backgroundColor: header.key ? header.data.style.pageBgColor : '',
+			backgroundImage: getBackgroundImage
+				? `url(${getBackgroundImage})`
+				: ''
+		}">
+		<com-header :curData="header" :pageBg="getBackgroundImage"
+			v-if="header.key && navIndex === 'index'"></com-header>
+		<!-- <view class="index-template-scroll_warp" :class="{
+				hidden_warp: navIndex !== 'index'
+			}" :style="{
+				opacity: isShowPage ? '1' : '0',
+				minHeight: `calc(100vh - ${statusBarHeight}px)`,
+				paddingTop:
+					navIndex !== 'personal' && navIndex !== 'micropage'
+						? `${statusBarHeight}px`
+						: ''
+			}">
+			<view class="index-template-scroll-item" v-for="tem in list" :key="tem.key">
+				<com-auto-render :curData="tem"></com-auto-render>
+			</view>
+		</view>
+		<template v-if="navIndex === 'index'">
+			<com-hoverButton v-for="item in hoverButton.list" :curData="item.data" :key="item.key"
+				@scrollTop="onScrollTop" :curScrollTop="curScrollTop"></com-hoverButton>
+		</template> -->
+		<com-footer :curData="footer.data" :curIndex="navIndex" v-if="footer.key"
+			@changeIndex="changeIndex"></com-footer>
 	</scroll-view>
 </template>
-
 <script setup lang="uts">
-	import { swiperModelData } from '@/components/template/com-swiper/mock';
-	import { searchModelData } from '@/components/template/com-search/mock';
-	import { navBarData } from '@/components/template/com-navBar/mock';
-	import { blankData } from '@/components/template/com-blank/mock.uts'
-	import { polylineData } from '@/components/template/com-polyline/mock.uts'
-	import { zoneData } from '@/components/template/com-imageZone/mock.uts'
-	import { footerData } from '@/components/template/com-footer/mock.uts'
+	import mockData from './mock-data.uts'
+	const scrollTop = ref<number | null>(0)
+	const curScrollTop = ref<number>(0)
+	const list = ref<any[]>([])
+	const header = ref<any>({})
+	const footer = ref<any>({})
+	const hoverButton = ref<any>({
+		list: []
+	})
+	const navTitle = ref<string>('')
+	const navIndex = ref<string>('index')
+	const navBackgroundColor = ref<string.ColorString>('transparent')
+	const isShowPage = ref<boolean>(true)
+	const statusBarHeight = ref<number>(44)
+	const getBackgroundImage = computed<string>(() : string => {
+		const url : any =
+			header.value.data &&
+			header.value.data.options &&
+			header.value.data.options.pageBgImg &&
+			header.value.data.options.pageBgImg.url
+		if (!url) return ''
+		return navIndex.value === 'index' ? url : ''
+	})
+	const changeIndex = (item : any) => {
+		navIndex.value = item.navIndex
+		navTitle.value = item.navTitle
+	}
+	const getTemplate = async () => {
+		isShowPage.value = false
+		const res : any = await getTemplateList()
+		if (!res || !res.content) {
+			uni.showToast({
+				title: '暂无已上架模板',
+				icon: 'none'
+			})
+			isShowPage.value = false
+			return
+		}
+
+		const list = JSON.parse(res.content)
+		const newList = list.filter(
+			(tem : any) =>
+				tem.moduleName !== 'header' &&
+				tem.moduleName !== 'footer' &&
+				tem.moduleName !== 'hover_button'
+		)
+		const strs : string[] = ['goods_group', 'raster_slide', 'multiline']
+		let obj : any = {},
+			params : any[] = []
+		const dynamicModule = newList.filter((tem : any) =>
+			strs.includes(tem.moduleName)
+		)
+		if (dynamicModule.length) {
+			dynamicModule.forEach((el : any) => {
+				const ids = el.data.content.filter(
+					(el : any) => el.id && el.id > 0
+				)
+				if (ids) {
+					obj[el.key] = el.data.content.map((el : any) => el.id)
+					params.push({
+						uuid: el.key,
+						type: el.dataType,
+						ids: el.data.content
+							.map((el : any) => el.id)
+							.join(',')
+					})
+				}
+			})
+		}
+		list.value = newList
+		setOhterModule(list)
+	}
+	const getTemplateList = async () => {
+		return new Promise((resolve) => setTimeout(() => resolve({ content: mockData }), 500))
+	}
+	const setOhterModule = (list : any[]) => {
+		header.value = list.find((tem) => tem.moduleName === 'header')
+		footer.value = list.find((tem) => tem.moduleName === 'footer')
+		hoverButton.value = list.find(
+			(tem) => tem.moduleName === 'hover_button'
+		)
+		navIndex.value =
+			footer.value.data.content[0].link.navIndex || 'index'
+		navTitle.value =
+			footer.value.data.content[0].link.navTitle || '首页'
+		isShowPage.value = true
+	}
+	const onScroll = (e : any) => {
+		curScrollTop.value = e.detail.scrollTop
+		scrollTop.value = null
+	}
+	const onScrollTop = () => {
+		if (!curScrollTop.value) return
+		scrollTop.value = 0
+		curScrollTop.value = 0
+	}
+	const setStatusBarHeight = () => {
+		const systemInfo = getApp().globalData.systemInfo as GetSystemInfoResult
+		// #ifndef H5
+		statusBarHeight.value = systemInfo.statusBarHeight + 44
+		// #endif
+		// #ifdef MP-WEIXIN
+		if (systemInfo.osName === 'windows' || systemInfo.osName === 'mac' || systemInfo.osName === 'macos') {
+			const { top } = uni.getMenuButtonBoundingClientRect()
+			statusBarHeight.value = top - statusBarHeight + 44
+		}
+		// #endif
+	}
+	onLoad(async () => {
+		await getTemplate()
+	})
 </script>
+
+<style lang="scss">
+	page {
+		padding-bottom: 0 !important;
+	}
+
+	.index-template-scroll {
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		min-height: 100vh;
+		max-height: 100vh;
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		transition: opacity 0.2s linear;
+
+		.navigation-slot {
+			display: flex;
+			height: 100%;
+			align-items: center;
+			padding-right: r(10px);
+			overflow: hidden;
+			position: relative;
+
+			.search-title {
+				position: absolute;
+				top: 50%;
+				left: 0;
+				width: 750rpx;
+				transform: translateY(-50%);
+				flex: 1;
+				font-weight: bold;
+				text-align: center;
+				@include wordEllipsisNum(2);
+
+				&.white-font {
+					color: white;
+					font-weight: normal;
+				}
+			}
+		}
+
+		.mask {
+			position: fixed;
+			top: 0;
+			left: 0;
+			content: '';
+			width: 100%;
+			height: 100vh;
+			background-size: 100% auto;
+			background-repeat: no-repeat;
+			background-position: 0 0;
+			z-index: 1;
+		}
+
+		&.loading {
+			&::before {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				background-color: #f5f5f5;
+				z-index: 999;
+			}
+
+			&::after {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 30rpx;
+				height: 30rpx;
+				content: '';
+				border: 1px solid #bdbdbd;
+				border-right-color: transparent;
+				border-radius: 50%;
+				background-color: transparent;
+				transform: translate3d(-50%, -50%, 0) rotate(0deg);
+				z-index: 1000;
+				animation: rotate 1s linear infinite;
+			}
+		}
+
+		&_warp {
+			position: relative;
+			height: auto;
+			@include pdenv(110rpx);
+
+			&.hidden_warp {
+				position: absolute !important;
+				width: 100% !important;
+				height: 0 !important;
+				min-height: 0 !important;
+				overflow: hidden !important;
+				opacity: 0 !important;
+			}
+		}
+	}
+
+	@keyframes rotate {
+		0% {
+			transform: translate3d(-50%, -50%, 0) rotate(0deg);
+		}
+
+		100% {
+			transform: translate3d(-50%, -50%, 0) rotate(360deg);
+		}
+	}
+</style>

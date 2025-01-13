@@ -1,0 +1,50 @@
+import { Image, LinkForm } from '../type.uts'
+export type HeaderContent = {
+	title : string,
+	shareContent : string,
+	bgImg : {
+		url : string
+	},
+	shareCover : Image[]
+}
+export type HeaderStyle = {
+	bgColor : string.ColorString,
+	pageBgColor : string.ColorString,
+	fontWeight : string,
+	color : string.ColorString,
+	fontSize : number,
+	navigationBarTextStyle : string.ColorString,
+	iconPr : number,
+	pl : number
+}
+export type HeaderSearch = {
+	borderRadius : number,
+	bgColor : string.ColorString,
+	opacity : number,
+	textAlign : string,
+	color : string.ColorString,
+	placeholder : string,
+	isShowPrefixIcon : boolean,
+	prefixLink : {
+		id : string,
+		type : string,
+		name : string,
+		path : string,
+		noCheckLogin ?: boolean,
+		isLogin ?: boolean,
+		form ?: LinkForm[]
+	},
+	prefixIcon : Image
+}
+export type HeaderOptions = {
+	type : number,
+	showType : number,
+	pageBgImg : Image
+}
+
+export type Header = {
+	content : HeaderContent,
+	style : HeaderStyle,
+	search : HeaderSearch,
+	options : HeaderOptions
+}
